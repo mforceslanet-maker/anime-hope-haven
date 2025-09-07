@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { EmotionalStateSelector } from './EmotionalStateSelector';
 import { Send, ArrowLeft, Heart, MessageCircle } from 'lucide-react';
+import { supabase } from '../integrations/supabase/client';
 
 interface ChatInterfaceProps {
   character: Character;
@@ -32,7 +33,30 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
     scrollToBottom();
   }, [messages]);
 
-  const generateResponse = (userMessage: string, mood?: EmotionalState): string => {
+  const generateAIResponse = async (userMessage: string, mood?: EmotionalState): Promise<string> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('chat-with-perplexity', {
+        body: {
+          message: userMessage,
+          characterName: character.name,
+          characterPersonality: character.personality,
+          mood: mood
+        }
+      });
+
+      if (error) {
+        console.error('Error calling Perplexity:', error);
+        return getFallbackResponse();
+      }
+
+      return data.response || getFallbackResponse();
+    } catch (error) {
+      console.error('Error with AI response:', error);
+      return getFallbackResponse();
+    }
+  };
+
+  const getFallbackResponse = (): string => {
     const responses = {
       kira: [
         "I hear you, and what you're feeling is completely valid. Let's explore this together gently.",
@@ -79,11 +103,13 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
     setCurrentMessage('');
     setIsTyping(true);
 
-    // Simulate typing delay
-    setTimeout(() => {
+    // Generate AI response
+    setTimeout(async () => {
+      const aiContent = await generateAIResponse(currentMessage, currentMood);
+      
       const characterResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        content: generateResponse(currentMessage, currentMood),
+        content: aiContent,
         sender: 'character',
         timestamp: new Date()
       };
