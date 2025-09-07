@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'comfortaa': ['Comfortaa', 'cursive'],
+        'nunito': ['Nunito', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -22,6 +26,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -57,6 +62,32 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Emotional state colors
+        happy: "hsl(var(--happy))",
+        calm: "hsl(var(--calm))",
+        sad: "hsl(var(--sad))",
+        anxious: "hsl(var(--anxious))",
+        excited: "hsl(var(--excited))",
+        // Character theme colors
+        kira: "hsl(var(--kira))",
+        hana: "hsl(var(--hana))",
+        yuki: "hsl(var(--yuki))",
+        sora: "hsl(var(--sora))",
+      },
+      backgroundImage: {
+        'gradient-sky': 'var(--gradient-sky)',
+        'gradient-nature': 'var(--gradient-nature)',
+        'gradient-peaceful': 'var(--gradient-peaceful)',
+        'gradient-warm': 'var(--gradient-warm)',
+      },
+      boxShadow: {
+        'gentle': 'var(--shadow-gentle)',
+        'float': 'var(--shadow-float)',
+        'character': 'var(--shadow-character)',
+      },
+      transitionTimingFunction: {
+        'gentle': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
       borderRadius: {
         lg: "var(--radius)",
