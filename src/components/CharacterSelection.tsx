@@ -16,7 +16,7 @@ export const CharacterSelection = ({ onCharacterSelect }: CharacterSelectionProp
           <div className="flex items-center justify-center gap-2 mb-4">
             <Heart className="w-8 h-8 text-primary" />
             <h1 className="text-4xl font-comfortaa font-bold text-foreground">
-              MindfulFriends
+              MyStory
             </h1>
             <Heart className="w-8 h-8 text-primary" />
           </div>
