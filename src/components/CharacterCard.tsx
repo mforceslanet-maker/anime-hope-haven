@@ -7,9 +7,14 @@ interface CharacterCardProps {
 }
 
 export const CharacterCard = ({ character, onSelect }: CharacterCardProps) => {
+  const handleClick = () => {
+    console.log('Character selected:', character.name);
+    onSelect(character);
+  };
+
   return (
-    <div className="character-card group">
-      <div className="flex flex-col items-center space-y-4">
+    <div className="character-card group" onClick={handleClick}>
+      <div className="flex flex-col items-center space-y-4 pointer-events-none">
         <div className="relative">
           <img
             src={character.image}
@@ -54,8 +59,11 @@ export const CharacterCard = ({ character, onSelect }: CharacterCardProps) => {
         </div>
 
         <Button
-          onClick={() => onSelect(character)}
-          className="w-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick();
+          }}
+          className="w-full pointer-events-auto"
           style={{
             backgroundColor: `hsl(var(--${character.color}))`,
             color: 'white',
