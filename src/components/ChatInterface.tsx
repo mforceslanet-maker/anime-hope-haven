@@ -3,6 +3,7 @@ import { Character, ChatMessage, EmotionalState } from '../types/character';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { EmotionalStateSelector } from './EmotionalStateSelector';
+import { VoiceInput } from './VoiceInput';
 import { Send, ArrowLeft, Heart, MessageCircle } from 'lucide-react';
 import { supabase } from '../integrations/supabase/client';
 
@@ -126,6 +127,17 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
     }
   };
 
+  const handleMoodAddToMessage = (mood: EmotionalState) => {
+    const moodText = `I'm feeling ${mood}. `;
+    if (!currentMessage.includes(moodText)) {
+      setCurrentMessage(prev => moodText + prev);
+    }
+  };
+
+  const handleVoiceTranscription = (text: string) => {
+    setCurrentMessage(prev => prev + (prev ? ' ' : '') + text);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-peaceful flex flex-col">
       {/* Header */}
@@ -212,6 +224,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
           <EmotionalStateSelector
             currentMood={currentMood}
             onMoodSelect={setCurrentMood}
+            onMoodAddToMessage={handleMoodAddToMessage}
           />
           
           <div className="flex gap-2">
@@ -221,6 +234,10 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
               onChange={(e) => setCurrentMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               className="flex-1 rounded-xl border-border/50 focus:border-primary/50 transition-colors"
+            />
+            <VoiceInput
+              onTranscription={handleVoiceTranscription}
+              disabled={isTyping}
             />
             <Button
               onClick={sendMessage}
