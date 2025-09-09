@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
 import { UserProfile } from '../types/story';
-import { AgeOnboarding } from '../components/AgeOnboarding';
-import { MainMenu } from '../components/MainMenu';
-import { StoryGame } from '../components/StoryGame';
+import { SplashScreen } from '../components/SplashScreen';
+import { MotivationalQuoteScreen } from '../components/MotivationalQuoteScreen';
+import { AgeInputScreen } from '../components/AgeInputScreen';
+import { CharacterIntroScreen } from '../components/CharacterIntroScreen';
+import { HomeScreen } from '../components/HomeScreen';
+import { StoryGameScreen } from '../components/StoryGameScreen';
+import { VoiceTextConfessionScreen } from '../components/VoiceTextConfessionScreen';
+import { Level2UnlockScreen } from '../components/Level2UnlockScreen';
 import { Level2Interface } from '../components/Level2Interface';
+import { SettingsScreen } from '../components/SettingsScreen';
 
-type AppView = 'onboarding' | 'menu' | 'level1' | 'level2';
+type AppView = 'splash' | 'motivation' | 'age-input' | 'character-intro' | 'home' | 'story-game' | 'voice-text' | 'level2-unlock' | 'level2' | 'settings' | 'daily-checkin';
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<AppView>('onboarding');
+  const [currentView, setCurrentView] = useState<AppView>('splash');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [showLevel2Notification, setShowLevel2Notification] = useState(false);
-  const [trialDaysLeft, setTrialDaysLeft] = useState(4);
 
   useEffect(() => {
     // Check if user has completed onboarding
@@ -19,108 +23,181 @@ const Index = () => {
     if (savedProfile) {
       const profile = JSON.parse(savedProfile);
       setUserProfile(profile);
-      setCurrentView('menu');
-      
-      // Check trial period
-      const trialStart = localStorage.getItem('myStoryTrialStart');
-      if (trialStart) {
-        const daysPassed = Math.floor((Date.now() - parseInt(trialStart)) / (1000 * 60 * 60 * 24));
-        setTrialDaysLeft(Math.max(0, 4 - daysPassed));
-      }
+      setCurrentView('home');
     }
   }, []);
 
-  const handleOnboardingComplete = (age: number, category: 'military-student' | 'military-personnel') => {
+  const handleSplashComplete = () => {
+    setCurrentView('motivation');
+  };
+
+  const handleMotivationContinue = () => {
+    setCurrentView('age-input');
+  };
+
+  const handleAgeInput = (age: number) => {
     const ageGroup = age < 25 ? 'teen' : age < 50 ? 'adult' : 'senior';
     const profile: UserProfile = {
       age,
       ageGroup,
-      category,
+      category: 'military-student', // Default, could be updated later
       level: 1,
       completedScenarios: [],
       anonymousId: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     };
     
     setUserProfile(profile);
-    localStorage.setItem('myStoryUserProfile', JSON.stringify(profile));
-    localStorage.setItem('myStoryTrialStart', Date.now().toString());
-    setCurrentView('menu');
+    setCurrentView('character-intro');
   };
 
-  const handleLevel1Complete = () => {
-    if (!userProfile) return;
-    
-    const updatedProfile = { ...userProfile, level: 2 as const };
-    setUserProfile(updatedProfile);
-    localStorage.setItem('myStoryUserProfile', JSON.stringify(updatedProfile));
-    setShowLevel2Notification(true);
-    setCurrentView('menu');
+  const handleCharacterIntroComplete = () => {
+    if (userProfile) {
+      localStorage.setItem('myStoryUserProfile', JSON.stringify(userProfile));
+      setCurrentView('home');
+    }
   };
 
-  const handleStartLevel1 = () => {
-    setCurrentView('level1');
+  const handleStartStoryGame = () => {
+    setCurrentView('story-game');
   };
 
-  const handleStartLevel2 = () => {
+  const handleStoryGameComplete = () => {
+    if (userProfile) {
+      const updatedProfile = { ...userProfile, level: 2 as const };
+      setUserProfile(updatedProfile);
+      localStorage.setItem('myStoryUserProfile', JSON.stringify(updatedProfile));
+      setCurrentView('level2-unlock');
+    }
+  };
+
+  const handleLevel2UnlockContinue = () => {
     setCurrentView('level2');
-    setShowLevel2Notification(false);
   };
 
-  const handleBackToMenu = () => {
-    setCurrentView('menu');
+  const handleLevel2UnlockDelay = () => {
+    setCurrentView('home');
+  };
+
+  const handleSpeakFeelings = () => {
+    setCurrentView('voice-text');
+  };
+
+  const handleDailyCheckIn = () => {
+    setCurrentView('daily-checkin');
+  };
+
+  const handleSettings = () => {
+    setCurrentView('settings');
+  };
+
+  const handleBackToHome = () => {
+    setCurrentView('home');
   };
 
   const handleBackToLevel1 = () => {
-    setCurrentView('level1');
+    setCurrentView('story-game');
   };
 
-  if (currentView === 'onboarding') {
-    return <AgeOnboarding onComplete={handleOnboardingComplete} />;
+  const handleResetData = () => {
+    localStorage.removeItem('myStoryUserProfile');
+    setUserProfile(null);
+    setCurrentView('splash');
+  };
+
+  // Render screens based on current view
+  if (currentView === 'splash') {
+    return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  if (!userProfile) {
-    return <AgeOnboarding onComplete={handleOnboardingComplete} />;
+  if (currentView === 'motivation') {
+    return <MotivationalQuoteScreen onContinue={handleMotivationContinue} />;
   }
 
-  if (currentView === 'menu') {
+  if (currentView === 'age-input') {
+    return <AgeInputScreen onContinue={handleAgeInput} />;
+  }
+
+  if (currentView === 'character-intro' && userProfile) {
     return (
-      <MainMenu 
-        userProfile={userProfile}
-        onStartLevel1={handleStartLevel1}
-        onStartLevel2={handleStartLevel2}
-        showLevel2Notification={showLevel2Notification}
-        trialDaysLeft={trialDaysLeft}
+      <CharacterIntroScreen 
+        userProfile={userProfile} 
+        onContinue={handleCharacterIntroComplete} 
       />
     );
   }
 
-  if (currentView === 'level1') {
+  if (currentView === 'home' && userProfile) {
     return (
-      <StoryGame 
+      <HomeScreen
         userProfile={userProfile}
-        onLevelComplete={handleLevel1Complete}
-        onBackToMenu={handleBackToMenu}
+        onStartStoryGame={handleStartStoryGame}
+        onDailyCheckIn={handleDailyCheckIn}
+        onSpeakFeelings={handleSpeakFeelings}
+        onSettings={handleSettings}
       />
     );
   }
 
-  if (currentView === 'level2') {
+  if (currentView === 'story-game' && userProfile) {
     return (
-      <Level2Interface 
+      <StoryGameScreen
+        userProfile={userProfile}
+        onComplete={handleStoryGameComplete}
+        onBack={handleBackToHome}
+      />
+    );
+  }
+
+  if (currentView === 'voice-text' && userProfile) {
+    return (
+      <VoiceTextConfessionScreen
+        userProfile={userProfile}
+        onBack={handleBackToHome}
+      />
+    );
+  }
+
+  if (currentView === 'level2-unlock') {
+    return (
+      <Level2UnlockScreen
+        onContinue={handleLevel2UnlockContinue}
+        onDelay={handleLevel2UnlockDelay}
+      />
+    );
+  }
+
+  if (currentView === 'level2' && userProfile) {
+    return (
+      <Level2Interface
         userProfile={userProfile}
         onBackToLevel1={handleBackToLevel1}
-        onBackToMenu={handleBackToMenu}
+        onBackToMenu={handleBackToHome}
       />
     );
   }
 
-  return <MainMenu 
-    userProfile={userProfile}
-    onStartLevel1={handleStartLevel1}
-    onStartLevel2={handleStartLevel2}
-    showLevel2Notification={showLevel2Notification}
-    trialDaysLeft={trialDaysLeft}
-  />;
+  if (currentView === 'settings' && userProfile) {
+    return (
+      <SettingsScreen
+        userProfile={userProfile}
+        onBack={handleBackToHome}
+        onResetData={handleResetData}
+      />
+    );
+  }
+
+  if (currentView === 'daily-checkin' && userProfile) {
+    // For now, redirect to voice-text screen
+    return (
+      <VoiceTextConfessionScreen
+        userProfile={userProfile}
+        onBack={handleBackToHome}
+      />
+    );
+  }
+
+  // Fallback to splash screen
+  return <SplashScreen onComplete={handleSplashComplete} />;
 };
 
 export default Index;
