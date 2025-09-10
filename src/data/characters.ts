@@ -3,7 +3,6 @@ import kiraImage from '../assets/kira-character.jpg';
 import hanaImage from '../assets/hana-character.jpg';
 import yukiImage from '../assets/yuki-character.jpg';
 import soraImage from '../assets/sora-character.jpg';
-import militaryTherapistImage from '../assets/military-therapist.jpg';
 
 export const characters: Character[] = [
   {
@@ -51,15 +50,3 @@ export const characters: Character[] = [
     greeting: 'Hey there, amazing human! I\'m Sora! Life can be tough sometimes, but you know what? You\'re tougher! Let\'s find some sunshine in your day together! ☀️'
   }
 ];
-
-export const militaryTherapist: Character = {
-  id: 'military-therapist',
-  name: 'Dr. Alex Morgan',
-  role: 'Military Personnel Therapist',
-  description: 'A specialized therapist with military background, providing support for service members during pre-deployment, deployment, and post-deployment phases.',
-  personality: 'Professional, understanding, experienced with military culture, and deeply committed to helping fellow service members and veterans.',
-  specialties: ['PTSD support', 'Deployment stress', 'Combat trauma', 'Military family counseling', 'Transition support', 'Resilience building'],
-  color: 'military',
-  image: militaryTherapistImage,
-  greeting: 'Hello, service member. I\'m Dr. Morgan, and I understand the unique challenges you face. Whether you\'re preparing for deployment, currently deployed, or transitioning back home, I\'m here to provide the support you need. Your service matters, and so does your wellbeing. 🎖️'
-};

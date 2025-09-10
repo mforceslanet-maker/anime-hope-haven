@@ -1,7 +1,6 @@
 import { Character } from '../types/character';
-import { characters, militaryTherapist } from '../data/characters';
+import { characters } from '../data/characters';
 import { CharacterCard } from './CharacterCard';
-import { MilitaryTherapistCard } from './MilitaryTherapistCard';
 import { Heart, Shield, Users } from 'lucide-react';
 
 interface CharacterSelectionProps {
@@ -34,53 +33,16 @@ export const CharacterSelection = ({ onCharacterSelect }: CharacterSelectionProp
           </div>
         </div>
 
-        {/* Companion Characters Section */}
-        <section className="mb-16">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-comfortaa font-semibold text-foreground mb-2">
-              Companion Characters
-            </h2>
-            <p className="text-muted-foreground">
-              Gentle souls here to support your mental wellness journey
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {characters.map((character) => (
-              <CharacterCard
-                key={character.id}
-                character={character}
-                onSelect={onCharacterSelect}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Military Personnel Therapist Section */}
-        <section className="mb-12">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Shield className="w-6 h-6 text-military" />
-              <h2 className="text-2xl font-comfortaa font-semibold text-military">
-                Military Personnel Support
-              </h2>
-              <Shield className="w-6 h-6 text-military" />
-            </div>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Specialized therapy for service members during pre-deployment, deployment, and post-deployment phases. 
-              Understanding the unique challenges of military life.
-            </p>
-          </div>
-          
-          <div className="flex justify-center">
-            <div className="max-w-md">
-              <MilitaryTherapistCard
-                therapist={militaryTherapist}
-                onSelect={onCharacterSelect}
-              />
-            </div>
-          </div>
-        </section>
+        {/* Character Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {characters.map((character) => (
+            <CharacterCard
+              key={character.id}
+              character={character}
+              onSelect={onCharacterSelect}
+            />
+          ))}
+        </div>
 
         {/* Support Notice */}
         <div className="text-center bg-card rounded-2xl p-6 shadow-gentle">
@@ -89,8 +51,7 @@ export const CharacterSelection = ({ onCharacterSelect }: CharacterSelectionProp
             You're Not Alone
           </h3>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            Whether you're a civilian seeking mental wellness support or a service member facing deployment challenges, 
-            our compassionate companions are here to listen and help you navigate life's journey.
+            Military families face unique challenges. Our friends are here to listen, support, and help you navigate life's ups and downs with understanding and care.
           </p>
         </div>
       </div>
