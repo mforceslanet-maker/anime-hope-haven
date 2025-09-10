@@ -7,37 +7,44 @@
 
 @layer base {
   :root {
-    /* Calming base colors */
+    /* Story App Soft Colors */
     --background: 205 100% 98%;
     --foreground: 215 25% 27%;
 
-    /* Peaceful card system */
+    /* Soft color palette */
     --card: 200 50% 97%;
     --card-foreground: 215 25% 27%;
 
     --popover: 200 50% 97%;
     --popover-foreground: 215 25% 27%;
 
-    /* Therapeutic primary - soft teal */
-    --primary: 180 45% 55%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 180 55% 75%;
+    /* Soft green primary */
+    --primary: 140 35% 75%;
+    --primary-foreground: 215 25% 27%;
+    --primary-glow: 140 45% 85%;
 
-    /* Gentle secondary - mint */
-    --secondary: 140 30% 85%;
+    /* Soft purple secondary */
+    --secondary: 280 30% 80%;
     --secondary-foreground: 215 25% 27%;
 
-    /* Soft muted tones */
-    --muted: 210 30% 92%;
+    /* Sky blue muted */
+    --muted: 200 40% 90%;
     --muted-foreground: 215 20% 55%;
 
-    /* Peaceful accent - lavender */
-    --accent: 260 30% 85%;
+    /* Sage green accent */
+    --accent: 150 25% 80%;
     --accent-foreground: 215 25% 27%;
 
-    /* Warning system - clear red for boundaries */
-    --destructive: 0 70% 55%;
+    /* Blush pink for warnings */
+    --destructive: 340 40% 75%;
     --destructive-foreground: 0 0% 100%;
+
+    /* Story App Color Palette */
+    --soft-green: 140 35% 75%;
+    --soft-purple: 280 30% 80%;
+    --sky-blue: 200 40% 85%;
+    --sage-green: 150 25% 80%;
+    --blush-pink: 340 40% 85%;
 
     /* Emotional state colors */
     --happy: 45 100% 70%;
@@ -58,11 +65,12 @@
     --input: 200 30% 90%;
     --ring: 180 45% 55%;
 
-    /* Therapeutic gradients */
-    --gradient-sky: linear-gradient(135deg, hsl(200 60% 85%), hsl(220 50% 90%));
-    --gradient-nature: linear-gradient(135deg, hsl(140 40% 80%), hsl(160 35% 85%));
-    --gradient-peaceful: linear-gradient(180deg, hsl(205 50% 95%), hsl(180 40% 90%));
-    --gradient-warm: linear-gradient(135deg, hsl(35 60% 85%), hsl(45 55% 90%));
+    /* Story App Gradients */
+    --gradient-soft-green: linear-gradient(135deg, hsl(140 35% 75%), hsl(140 45% 85%));
+    --gradient-soft-purple: linear-gradient(135deg, hsl(280 30% 80%), hsl(280 40% 90%));
+    --gradient-sky-blue: linear-gradient(135deg, hsl(200 40% 85%), hsl(200 50% 95%));
+    --gradient-sage-green: linear-gradient(135deg, hsl(150 25% 80%), hsl(150 35% 90%));
+    --gradient-blush-pink: linear-gradient(135deg, hsl(340 40% 85%), hsl(340 50% 95%));
 
     /* Soft shadows for depth */
     --shadow-gentle: 0 4px 20px hsl(200 20% 85% / 0.3);

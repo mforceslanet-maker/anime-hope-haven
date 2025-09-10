@@ -74,13 +74,14 @@ export default {
         yuki: "hsl(var(--yuki))",
         sora: "hsl(var(--sora))",
         military: "hsl(var(--military))",
-      },
-      backgroundImage: {
-        'gradient-sky': 'var(--gradient-sky)',
-        'gradient-nature': 'var(--gradient-nature)',
-        'gradient-peaceful': 'var(--gradient-peaceful)',
-        'gradient-warm': 'var(--gradient-warm)',
-      },
+        },
+        backgroundImage: {
+          'gradient-soft-green': 'var(--gradient-soft-green)',
+          'gradient-soft-purple': 'var(--gradient-soft-purple)',
+          'gradient-sky-blue': 'var(--gradient-sky-blue)',
+          'gradient-sage-green': 'var(--gradient-sage-green)',
+          'gradient-blush-pink': 'var(--gradient-blush-pink)',
+        },
       boxShadow: {
         'gentle': 'var(--shadow-gentle)',
         'float': 'var(--shadow-float)',
