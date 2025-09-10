@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
+// Import correct icons from lucide-react
 import { Bell, Gamepad2, Heart, Mic } from 'lucide-react';
 
 interface HomeScreenProps {
