@@ -74,11 +74,6 @@ export default {
         yuki: "hsl(var(--yuki))",
         sora: "hsl(var(--sora))",
         military: "hsl(var(--military))",
-        "soft-green": "hsl(var(--soft-green))",
-        "soft-purple": "hsl(var(--soft-purple))",
-        "sky-blue": "hsl(var(--sky-blue))",
-        "sage-green": "hsl(var(--sage-green))",
-        "blush-pink": "hsl(var(--blush-pink))",
       },
       backgroundImage: {
         'gradient-sky': 'var(--gradient-sky)',
