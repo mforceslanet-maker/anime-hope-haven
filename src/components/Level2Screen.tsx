@@ -208,7 +208,7 @@ export const Level2Screen = ({ onBack, onReturnToLevel1, age }: Level2ScreenProp
                     {character.name === 'Skye' && '💫'}
                     {character.name === 'Alex' && '🎊'}
                   </span>
-                </div>
+                </motion.div>
               ))}
             </div>
             

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
-import { Bell, GameController2, Heart, Mic } from 'lucide-react';
+import { Bell, Gamepad2, Heart, Mic } from 'lucide-react';
 
 interface HomeScreenProps {
   onStartStoryGame: () => void;
@@ -113,7 +113,7 @@ export const HomeScreen = ({
                 onClick={onStartStoryGame}
                 className="w-full h-32 bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center gap-3 text-white transition-all duration-300 group"
               >
-                <GameController2 className="w-8 h-8 group-hover:scale-110 transition-transform" />
+                <Gamepad2 className="w-8 h-8 group-hover:scale-110 transition-transform" />
                 <div className="text-center">
                   <div className="text-lg font-comfortaa font-semibold">Start Story Game</div>
                   <div className="text-sm opacity-80">Level 1</div>
