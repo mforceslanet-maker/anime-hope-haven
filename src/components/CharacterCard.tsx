@@ -13,13 +13,13 @@ export const CharacterCard = ({ character, onSelect }: CharacterCardProps) => {
   };
 
   return (
-    <div className="character-card group" onClick={handleClick}>
-      <div className="flex flex-col items-center space-y-4 pointer-events-none">
+    <div className="character-card group touch-manipulation" onClick={handleClick}>
+      <div className="flex flex-col items-center space-y-3 sm:space-y-4 pointer-events-none">
         <div className="relative">
           <img
             src={character.image}
             alt={character.name}
-            className="w-24 h-24 rounded-full object-cover shadow-character transition-transform duration-300 group-hover:scale-110"
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover shadow-character transition-transform duration-300 group-hover:scale-110"
           />
           <div 
             className="absolute inset-0 rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-300"
@@ -28,7 +28,7 @@ export const CharacterCard = ({ character, onSelect }: CharacterCardProps) => {
         </div>
         
         <div className="text-center space-y-2">
-          <h3 className="text-xl font-comfortaa font-semibold text-foreground">
+          <h3 className="text-lg sm:text-xl font-comfortaa font-semibold text-foreground">
             {character.name}
           </h3>
           <p 
@@ -37,7 +37,7 @@ export const CharacterCard = ({ character, onSelect }: CharacterCardProps) => {
           >
             {character.role}
           </p>
-          <p className="text-sm text-muted-foreground leading-relaxed px-2">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed px-2">
             {character.description}
           </p>
         </div>
@@ -63,7 +63,7 @@ export const CharacterCard = ({ character, onSelect }: CharacterCardProps) => {
             e.stopPropagation();
             handleClick();
           }}
-          className="w-full pointer-events-auto"
+          className="w-full pointer-events-auto min-h-[44px] touch-manipulation text-sm sm:text-base"
           style={{
             backgroundColor: `hsl(var(--${character.color}))`,
             color: 'white',

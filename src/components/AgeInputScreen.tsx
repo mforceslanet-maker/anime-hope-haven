@@ -26,9 +26,9 @@ export const AgeInputScreen = ({ onContinue }: AgeInputScreenProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20 p-4 sm:p-6">
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-card rounded-3xl p-8 shadow-xl border border-border animate-fade-in">
+        <div className="bg-card rounded-3xl p-6 sm:p-8 shadow-xl border border-border animate-fade-in">
           <div className="text-center mb-6">
             <Users className="w-12 h-12 text-primary mx-auto mb-4" />
             <h2 className="text-2xl font-comfortaa font-semibold text-foreground mb-2">

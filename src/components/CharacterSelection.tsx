@@ -10,29 +10,29 @@ interface CharacterSelectionProps {
 
 export const CharacterSelection = ({ onCharacterSelect }: CharacterSelectionProps) => {
   return (
-    <div className="min-h-screen p-6 bg-gradient-peaceful">
+    <div className="min-h-screen p-4 sm:p-6 bg-gradient-peaceful">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Heart className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl font-comfortaa font-bold text-foreground">
+            <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-comfortaa font-bold text-foreground">
               MyStory
             </h1>
-            <Heart className="w-8 h-8 text-primary" />
+            <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           </div>
-          <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto px-2">
             Choose a caring companion to support you on your journey. Each friend has their own special way of helping you feel better.
           </p>
           
           {/* Our Mission */}
-          <div className="bg-card rounded-2xl p-6 shadow-gentle mb-8 max-w-4xl mx-auto border border-border">
+          <div className="bg-card rounded-2xl p-4 sm:p-6 shadow-gentle mb-6 sm:mb-8 max-w-4xl mx-auto border border-border">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Heart className="w-6 h-6 text-primary" />
-              <h3 className="text-xl font-comfortaa font-semibold text-foreground">Our Mission</h3>
-              <Heart className="w-6 h-6 text-primary" />
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              <h3 className="text-lg sm:text-xl font-comfortaa font-semibold text-foreground">Our Mission</h3>
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
             </div>
-            <p className="text-muted-foreground leading-relaxed text-center">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-center px-2">
               Created for military school students and their families, MyStory addresses the unique mental health challenges faced by our community. 
               We understand the invisible battles - anxiety from parental deployments, the upheaval of sudden relocations, grief from loss, 
               and the strain of prolonged separations. Our mission is to help students find their voices, regain joy, and transform 
@@ -60,7 +60,7 @@ export const CharacterSelection = ({ onCharacterSelect }: CharacterSelectionProp
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {characters.map((character) => (
               <CharacterCard
                 key={character.id}
@@ -98,12 +98,12 @@ export const CharacterSelection = ({ onCharacterSelect }: CharacterSelectionProp
         </section>
 
         {/* Support Notice */}
-        <div className="text-center bg-card rounded-2xl p-6 shadow-gentle">
-          <Users className="w-8 h-8 text-primary mx-auto mb-3" />
-          <h3 className="text-lg font-comfortaa font-semibold mb-2">
+        <div className="text-center bg-card rounded-2xl p-4 sm:p-6 shadow-gentle">
+          <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary mx-auto mb-3" />
+          <h3 className="text-base sm:text-lg font-comfortaa font-semibold mb-2">
             You're Not Alone
           </h3>
-          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+          <p className="text-muted-foreground text-sm max-w-md mx-auto px-2">
             Whether you're a civilian seeking mental wellness support or a service member facing deployment challenges, 
             our compassionate companions are here to listen and help you navigate life's journey.
           </p>

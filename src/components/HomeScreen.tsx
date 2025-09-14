@@ -46,22 +46,22 @@ export const HomeScreen = ({
   }, []);
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${gradients[bgGradient]} dark:from-pink-900/20 dark:via-rose-900/20 dark:to-pink-900/20 transition-all duration-1000 p-6`}>
+    <div className={`min-h-screen bg-gradient-to-br ${gradients[bgGradient]} dark:from-pink-900/20 dark:via-rose-900/20 dark:to-pink-900/20 transition-all duration-1000 p-4 sm:p-6`}>
       {/* Reminder Popup */}
       {showReminder && (
-        <div className="fixed top-4 right-4 z-50 animate-fade-in">
+        <div className="fixed top-4 right-4 left-4 sm:left-auto z-50 animate-fade-in">
           <Card className="bg-card border border-border shadow-lg">
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-primary" />
-                <p className="text-sm text-foreground">
+                <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
+                <p className="text-xs sm:text-sm text-foreground">
                   Hey there! Don't forget to check in.
                 </p>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowReminder(false)}
-                  className="h-6 w-6 p-0 ml-2"
+                  className="h-6 w-6 p-0 ml-auto flex-shrink-0"
                 >
                   ×
                 </Button>
@@ -73,32 +73,32 @@ export const HomeScreen = ({
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
+        <div className="text-center mb-6 sm:mb-8 animate-fade-in">
           <div className="flex items-center justify-between mb-4">
-            <div></div>
-            <h1 className="text-3xl font-comfortaa font-bold text-foreground">
+            <div className="w-8"></div>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-comfortaa font-bold text-foreground">
               Welcome back, {userName}!
             </h1>
             <Button
               variant="ghost"
               size="icon"
               onClick={onSettings}
-              className="hover:bg-white/20"
+              className="hover:bg-white/20 w-8 h-8 sm:w-10 sm:h-10"
             >
-              <Settings className="w-6 h-6" />
+              <Settings className="w-5 h-5 sm:w-6 sm:h-6" />
             </Button>
           </div>
         </div>
 
         {/* Main Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Story Game */}
-          <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer" onClick={onStartStoryGame}>
-            <CardContent className="p-6 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Gamepad2 className="w-8 h-8 text-white" />
+          <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer touch-manipulation" onClick={onStartStoryGame}>
+            <CardContent className="p-4 sm:p-6 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Gamepad2 className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h3 className="text-xl font-comfortaa font-semibold mb-2">
+              <h3 className="text-lg sm:text-xl font-comfortaa font-semibold mb-2">
                 Start Story Game
               </h3>
               <p className="text-muted-foreground text-sm">
@@ -108,12 +108,12 @@ export const HomeScreen = ({
           </Card>
 
           {/* Check-in */}
-          <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer" onClick={onCheckIn}>
-            <CardContent className="p-6 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Heart className="w-8 h-8 text-white" />
+          <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer touch-manipulation" onClick={onCheckIn}>
+            <CardContent className="p-4 sm:p-6 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h3 className="text-xl font-comfortaa font-semibold mb-2">
+              <h3 className="text-lg sm:text-xl font-comfortaa font-semibold mb-2">
                 Daily Check-in
               </h3>
               <p className="text-muted-foreground text-sm">
@@ -123,12 +123,12 @@ export const HomeScreen = ({
           </Card>
 
           {/* Voice/Text Feelings */}
-          <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer" onClick={onVoiceConfession}>
-            <CardContent className="p-6 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Mic className="w-8 h-8 text-white" />
+          <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer touch-manipulation sm:col-span-2 lg:col-span-1" onClick={onVoiceConfession}>
+            <CardContent className="p-4 sm:p-6 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Mic className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
-              <h3 className="text-xl font-comfortaa font-semibold mb-2">
+              <h3 className="text-lg sm:text-xl font-comfortaa font-semibold mb-2">
                 Share Your Feelings
               </h3>
               <p className="text-muted-foreground text-sm">
@@ -140,12 +140,12 @@ export const HomeScreen = ({
 
         {/* Motivational Message */}
         <Card className="bg-card/80 backdrop-blur-sm border border-border/50 animate-fade-in">
-          <CardContent className="p-6 text-center">
-            <Heart className="w-8 h-8 text-primary mx-auto mb-3" />
-            <h3 className="text-lg font-comfortaa font-semibold mb-2">
+          <CardContent className="p-4 sm:p-6 text-center">
+            <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-primary mx-auto mb-3" />
+            <h3 className="text-base sm:text-lg font-comfortaa font-semibold mb-2">
               You're Doing Great!
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm sm:text-base">
               Every step forward is progress. Your mental wellness journey matters, and we're here to support you.
             </p>
           </CardContent>

@@ -223,12 +223,12 @@
 
   /* Chat bubble animations */
   .chat-bubble {
-    @apply rounded-2xl p-4 mb-4 max-w-xs;
+    @apply rounded-2xl p-3 sm:p-4 mb-3 sm:mb-4;
     animation: slideUp 0.5s ease-out;
   }
 
   .chat-bubble-user {
-    @apply bg-primary text-primary-foreground ml-auto;
+    @apply bg-primary text-primary-foreground;
   }
 
   .chat-bubble-character {

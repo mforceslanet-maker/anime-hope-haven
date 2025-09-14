@@ -16,20 +16,21 @@ const moodOptions = [
 
 export const EmotionalStateSelector = ({ currentMood, onMoodSelect }: EmotionalStateSelectorProps) => {
   return (
-    <div className="bg-card rounded-2xl p-4 shadow-gentle">
-      <h3 className="text-sm font-comfortaa font-medium text-center mb-3 text-muted-foreground">
+    <div className="bg-card rounded-2xl p-3 sm:p-4 shadow-gentle">
+      <h3 className="text-xs sm:text-sm font-comfortaa font-medium text-center mb-3 text-muted-foreground">
         How are you feeling right now?
       </h3>
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
         {moodOptions.map(({ state, icon: Icon, label, color }) => (
           <button
             key={state}
             onClick={() => onMoodSelect(state)}
-            className={`emotion-indicator ${currentMood === state ? `emotion-${state}` : 'bg-muted/50 text-muted-foreground'} transition-all duration-300 hover:scale-110`}
+            className={`emotion-indicator ${currentMood === state ? `emotion-${state}` : 'bg-muted/50 text-muted-foreground'} transition-all duration-300 hover:scale-110 touch-manipulation min-h-[40px] text-xs sm:text-sm`}
             title={label}
           >
-            <Icon className="w-4 h-4" />
-            <span className="text-xs">{label}</span>
+            <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-xs hidden sm:inline">{label}</span>
+            <span className="text-xs sm:hidden">{label.charAt(0)}</span>
           </button>
         ))}
       </div>

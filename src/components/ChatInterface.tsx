@@ -129,13 +129,13 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
   return (
     <div className="min-h-screen bg-gradient-peaceful flex flex-col">
       {/* Header */}
-      <div className="bg-card border-b border-border p-4 shadow-gentle">
-        <div className="max-w-4xl mx-auto flex items-center gap-4">
+      <div className="bg-card border-b border-border p-3 sm:p-4 shadow-gentle">
+        <div className="max-w-4xl mx-auto flex items-center gap-3 sm:gap-4">
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={onBack}
-            className="p-2"
+            className="p-2 touch-manipulation"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
@@ -143,56 +143,56 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
           <img
             src={character.image}
             alt={character.name}
-            className="w-10 h-10 rounded-full object-cover"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
           />
           
-          <div className="flex-1">
-            <h2 className="font-comfortaa font-semibold text-lg">{character.name}</h2>
-            <p className="text-sm text-muted-foreground">{character.role}</p>
+          <div className="flex-1 min-w-0">
+            <h2 className="font-comfortaa font-semibold text-base sm:text-lg truncate">{character.name}</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground truncate">{character.role}</p>
           </div>
 
-          <div className="flex items-center gap-2 text-primary">
-            <Heart className="w-4 h-4" />
-            <span className="text-sm font-medium">Safe Space</span>
+          <div className="flex items-center gap-1 sm:gap-2 text-primary">
+            <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-xs sm:text-sm font-medium hidden sm:inline">Safe Space</span>
           </div>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 max-w-4xl mx-auto w-full p-4">
-        <div className="space-y-4 mb-4">
+      <div className="flex-1 max-w-4xl mx-auto w-full p-3 sm:p-4 overflow-y-auto">
+        <div className="space-y-3 sm:space-y-4 mb-4">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`chat-bubble ${message.sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-character'}`}
+              className={`chat-bubble ${message.sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-character'} ${message.sender === 'user' ? 'max-w-[85%] ml-auto' : 'max-w-[85%]'}`}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-2 sm:gap-3">
                 {message.sender === 'character' && (
                   <img
                     src={character.image}
                     alt={character.name}
-                    className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0"
                   />
                 )}
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   {message.emotion && message.sender === 'user' && (
                     <div className={`emotion-indicator emotion-${message.emotion} text-xs mb-2 inline-flex`}>
                       Feeling {message.emotion}
                     </div>
                   )}
-                  <p className="text-sm leading-relaxed">{message.content}</p>
+                  <p className="text-sm sm:text-base leading-relaxed break-words">{message.content}</p>
                 </div>
               </div>
             </div>
           ))}
           
           {isTyping && (
-            <div className="chat-bubble chat-bubble-character">
-              <div className="flex items-center gap-3">
+            <div className="chat-bubble chat-bubble-character max-w-[85%]">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <img
                   src={character.image}
                   alt={character.name}
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover"
                 />
                 <div className="flex gap-1">
                   <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce"></div>
@@ -207,25 +207,25 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
       </div>
 
       {/* Input Area */}
-      <div className="bg-card border-t border-border p-4 shadow-gentle">
-        <div className="max-w-4xl mx-auto space-y-4">
+      <div className="bg-card border-t border-border p-3 sm:p-4 shadow-gentle">
+        <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4">
           <EmotionalStateSelector
             currentMood={currentMood}
             onMoodSelect={setCurrentMood}
           />
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 sm:gap-3">
             <Input
               placeholder={`Share what's on your mind with ${character.name}...`}
               value={currentMessage}
               onChange={(e) => setCurrentMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="flex-1 rounded-xl border-border/50 focus:border-primary/50 transition-colors"
+              className="flex-1 rounded-xl border-border/50 focus:border-primary/50 transition-colors text-sm sm:text-base min-h-[44px] sm:min-h-[48px]"
             />
             <Button
               onClick={sendMessage}
               disabled={!currentMessage.trim()}
-              className="p-3 rounded-xl"
+              className="p-3 sm:p-4 rounded-xl touch-manipulation min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px]"
               style={{
                 backgroundColor: `hsl(var(--${character.color}))`,
                 color: 'white',
@@ -235,7 +235,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
             </Button>
           </div>
           
-          <p className="text-xs text-center text-muted-foreground">
+          <p className="text-xs text-center text-muted-foreground leading-relaxed px-2">
             <MessageCircle className="w-3 h-3 inline mr-1" />
             Your conversations are private and anonymous. {character.name} is here to listen and support you.
           </p>
