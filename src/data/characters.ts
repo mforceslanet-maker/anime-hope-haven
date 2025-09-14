@@ -1,9 +1,9 @@
 import { Character } from '../types/character';
-import kiraImage from '../assets/kira-character.jpg';
-import hanaImage from '../assets/hana-character.jpg';
-import yukiImage from '../assets/yuki-character.jpg';
-import soraImage from '../assets/sora-character.jpg';
-import militaryTherapistImage from '../assets/military-therapist.jpg';
+import kiraImage from '../assets/character-1.jpg';
+import hanaImage from '../assets/character-2.jpg';
+import yukiImage from '../assets/character-4.jpg';
+import soraImage from '../assets/character-6.jpg';
+import militaryTherapistImage from '../assets/character-3.jpg';
 
 export const characters: Character[] = [
   {
