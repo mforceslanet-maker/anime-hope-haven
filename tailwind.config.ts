@@ -73,6 +73,7 @@ export default {
         hana: "hsl(var(--hana))",
         yuki: "hsl(var(--yuki))",
         sora: "hsl(var(--sora))",
+        military: "hsl(var(--military))",
       },
       backgroundImage: {
         'gradient-sky': 'var(--gradient-sky)',
