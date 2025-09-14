@@ -25,6 +25,21 @@ export const CharacterSelection = ({ onCharacterSelect }: CharacterSelectionProp
             Choose a caring companion to support you on your journey. Each friend has their own special way of helping you feel better.
           </p>
           
+          {/* Our Mission */}
+          <div className="bg-card rounded-2xl p-6 shadow-gentle mb-8 max-w-4xl mx-auto border border-border">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Heart className="w-6 h-6 text-primary" />
+              <h3 className="text-xl font-comfortaa font-semibold text-foreground">Our Mission</h3>
+              <Heart className="w-6 h-6 text-primary" />
+            </div>
+            <p className="text-muted-foreground leading-relaxed text-center">
+              Created for military school students and their families, MyStory addresses the unique mental health challenges faced by our community. 
+              We understand the invisible battles - anxiety from parental deployments, the upheaval of sudden relocations, grief from loss, 
+              and the strain of prolonged separations. Our mission is to help students find their voices, regain joy, and transform 
+              silent struggles into stories of resilience, leadership, and hope. Together, we're investing in the transformation of countless young lives.
+            </p>
+          </div>
+          
           {/* Privacy Notice */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-card rounded-full border border-border shadow-gentle">
             <Shield className="w-4 h-4 text-primary" />
