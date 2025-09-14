@@ -58,33 +58,39 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
 
   const getFallbackResponse = (): string => {
     const responses = {
-      kira: [
+      junno: [
         "I hear you, and what you're feeling is completely valid. Let's explore this together gently.",
         "Take a deep breath with me. You're safe here, and we have all the time you need.",
         "That sounds challenging. What feels most important to you right now?",
         "You're showing such courage by sharing this. How can I best support you today?"
       ],
-      hana: [
+      lex: [
         "Like trees that bend but don't break in storms, you have incredible inner strength.",
         "Sometimes nature teaches us that growth happens slowly, and that's perfectly okay.",
         "Your feelings are like seasons - they change, and each one has its purpose.",
         "Let's find some calm together. You deserve peace and comfort."
       ],
-      yuki: [
+      nova: [
         "It's beautiful how you're taking time to understand your emotions. That takes wisdom.",
         "Your thoughts and feelings matter deeply. Let's sit with them together.",
         "Sometimes the most healing thing is simply being heard and understood.",
         "What would it feel like to be gentle with yourself in this moment?"
       ],
-      sora: [
+      skye: [
         "You know what? You're being so brave right now, and I'm proud of you!",
         "Even on cloudy days, the sun is still shining above the clouds - just like your inner light!",
         "Let's find something that brings a little sparkle to your day together!",
         "You have so much strength inside you - sometimes we just need to remind ourselves!"
+      ],
+      alex: [
+        "I'm here to listen and support you through whatever you're experiencing.",
+        "Your feelings are completely valid, and you deserve compassion and understanding.",
+        "Let's work through this together, one step at a time.",
+        "You're not alone in this. I'm here to help you find your way forward."
       ]
     };
 
-    const characterResponses = responses[character.id as keyof typeof responses] || responses.kira;
+    const characterResponses = responses[character.id as keyof typeof responses] || responses.junno;
     return characterResponses[Math.floor(Math.random() * characterResponses.length)];
   };
 
