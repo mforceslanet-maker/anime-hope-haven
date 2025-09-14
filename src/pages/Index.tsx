@@ -8,111 +8,60 @@ import { CharacterSelection } from '../components/CharacterSelection';
 import { HomeScreen } from '../components/HomeScreen';
 import { ChatInterface } from '../components/ChatInterface';
 import { WellnessDashboard } from '../components/WellnessDashboard';
+import { StoryGameScreen } from '../components/StoryGameScreen';
+import { Level2Screen } from '../components/Level2Screen';
+import { TrialManager } from '../components/TrialManager';
+import { toast } from '../hooks/use-toast';
 
-type AppView = AppScreen | 'dashboard';
+type AppView = AppScreen | 'dashboard' | 'story-game' | 'level2';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<AppView>('splash');
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [userAge, setUserAge] = useState<number | null>(null);
-  const [storyProgress, setStoryProgress] = useState<StoryProgress>({
-    level: 1,
-    completedScenarios: [],
-    unlockedFeatures: []
-  });
+  const [hasUnlockedLevel2, setHasUnlockedLevel2] = useState(false);
 
-  const handleSplashComplete = () => {
-    setCurrentView('quote');
-  };
-
-  const handleQuoteBegin = () => {
-    setCurrentView('age-input');
-  };
-
+  const handleSplashComplete = () => setCurrentView('quote');
+  const handleQuoteBegin = () => setCurrentView('age-input');
   const handleAgeSubmit = (age: number) => {
     setUserAge(age);
     setCurrentView('character-selection');
   };
-
   const handleCharacterSelect = (character: Character) => {
     setSelectedCharacter(character);
     setCurrentView('home');
   };
-
-  const handleStartStoryGame = () => {
-    setCurrentView('chat'); // For now, redirect to chat - can be expanded to story game later
+  const handleStartStoryGame = () => setCurrentView('story-game');
+  const handleCheckIn = () => setCurrentView('dashboard');
+  const handleVoiceConfession = () => setCurrentView('chat');
+  const handleSettings = () => toast({ title: "Settings", description: "Settings panel coming soon!" });
+  const handleBackToHome = () => setCurrentView('home');
+  const handleLevelUnlocked = () => {
+    setHasUnlockedLevel2(true);
+    toast({ title: "🎉 Level 2 Unlocked!", description: "Hey there's Level 2 - You'll love it!" });
   };
 
-  const handleCheckIn = () => {
-    setCurrentView('dashboard');
-  };
-
-  const handleVoiceConfession = () => {
-    setCurrentView('chat'); // For now, redirect to chat - can be expanded to voice input later
-  };
-
-  const handleSettings = () => {
-    // Can be expanded to settings screen later
-    console.log('Settings clicked');
-  };
-
-  const handleBackToSelection = () => {
-    setCurrentView('character-selection');
-    setSelectedCharacter(null);
-  };
-
-  const handleBackToHome = () => {
-    setCurrentView('home');
-  };
-
-  // Render screens based on current view
-  if (currentView === 'splash') {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
-
-  if (currentView === 'quote') {
-    return <MotivationalQuoteScreen onBegin={handleQuoteBegin} />;
-  }
-
-  if (currentView === 'age-input') {
-    return <AgeInputScreen onContinue={handleAgeSubmit} />;
-  }
-
-  if (currentView === 'character-selection') {
-    return <CharacterSelection onCharacterSelect={handleCharacterSelect} />;
-  }
-
-  if (currentView === 'home') {
-    return (
-      <HomeScreen 
-        onStartStoryGame={handleStartStoryGame}
-        onCheckIn={handleCheckIn}
-        onVoiceConfession={handleVoiceConfession}
-        onSettings={handleSettings}
-      />
-    );
-  }
-
-  if (currentView === 'chat' && selectedCharacter) {
-    return (
-      <ChatInterface 
-        character={selectedCharacter} 
-        onBack={handleBackToHome}
-      />
-    );
-  }
-
-  if (currentView === 'dashboard' && selectedCharacter) {
-    return (
-      <WellnessDashboard 
-        character={selectedCharacter}
-        onBack={handleBackToHome}
-        onStartChat={() => setCurrentView('chat')}
-      />
-    );
-  }
-
-  // Fallback to character selection
+  if (currentView === 'splash') return <SplashScreen onComplete={handleSplashComplete} />;
+  if (currentView === 'quote') return <MotivationalQuoteScreen onBegin={handleQuoteBegin} />;
+  if (currentView === 'age-input') return <AgeInputScreen onContinue={handleAgeSubmit} />;
+  if (currentView === 'character-selection') return <CharacterSelection onCharacterSelect={handleCharacterSelect} />;
+  if (currentView === 'home') return (
+    <div>
+      <HomeScreen onStartStoryGame={handleStartStoryGame} onCheckIn={handleCheckIn} onVoiceConfession={handleVoiceConfession} onSettings={handleSettings} />
+      {hasUnlockedLevel2 && (
+        <div className="fixed bottom-4 right-4 z-50 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg">
+          <p className="text-sm mb-2">🎉 Level 2 Available!</p>
+          <button onClick={() => setCurrentView('level2')} className="text-xs bg-white text-primary px-3 py-1 rounded">Try Level 2</button>
+        </div>
+      )}
+      <div className="fixed bottom-4 left-4 z-40 max-w-sm"><TrialManager onTrialUpdate={() => {}} /></div>
+    </div>
+  );
+  if (currentView === 'story-game') return <StoryGameScreen onBack={handleBackToHome} userAge={userAge || 16} onLevelUnlocked={handleLevelUnlocked} />;
+  if (currentView === 'level2') return <Level2Screen onBack={handleBackToHome} userAge={userAge || 16} />;
+  if (currentView === 'chat' && selectedCharacter) return <ChatInterface character={selectedCharacter} onBack={handleBackToHome} />;
+  if (currentView === 'dashboard' && selectedCharacter) return <WellnessDashboard character={selectedCharacter} onBack={handleBackToHome} onStartChat={() => setCurrentView('chat')} />;
+  
   return <CharacterSelection onCharacterSelect={handleCharacterSelect} />;
 };
 
