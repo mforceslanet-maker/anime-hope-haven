@@ -1,16 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Shield, Users } from 'lucide-react';
+import { Shield, Users, Briefcase, Plus } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface AgeInputScreenProps {
-  onContinue: (age: number) => void;
+  onContinue: (age: number, profession?: string) => void;
 }
+
+const DEFAULT_PROFESSIONS = [
+  'Military Student',
+  'Military Personnel',
+  'Healthcare Professional',
+  'Teacher/Educator',
+  'Engineer',
+  'Business Professional',
+  'Student',
+  'Other'
+];
 
 export const AgeInputScreen = ({ onContinue }: AgeInputScreenProps) => {
   const [age, setAge] = useState('');
   const [error, setError] = useState('');
+  const [profession, setProfession] = useState('');
+  const [customProfession, setCustomProfession] = useState('');
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [professions, setProfessions] = useState<string[]>(DEFAULT_PROFESSIONS);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('customProfessions');
+    if (saved) {
+      const custom = JSON.parse(saved);
+      setProfessions([...DEFAULT_PROFESSIONS, ...custom]);
+    }
+  }, []);
+
+  const handleAddCustomProfession = () => {
+    if (customProfession.trim()) {
+      const saved = localStorage.getItem('customProfessions');
+      const existing = saved ? JSON.parse(saved) : [];
+      const updated = [...existing, customProfession.trim()];
+      localStorage.setItem('customProfessions', JSON.stringify(updated));
+      setProfessions([...DEFAULT_PROFESSIONS, ...updated]);
+      setProfession(customProfession.trim());
+      setCustomProfession('');
+      setShowCustomInput(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +59,8 @@ export const AgeInputScreen = ({ onContinue }: AgeInputScreenProps) => {
     }
     
     setError('');
-    onContinue(ageNum);
+    const finalProfession = profession === 'Other' ? undefined : profession || undefined;
+    onContinue(ageNum, finalProfession);
   };
 
   return (
@@ -56,6 +94,57 @@ export const AgeInputScreen = ({ onContinue }: AgeInputScreenProps) => {
               />
               {error && (
                 <p className="text-sm text-red-500 text-center">{error}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="profession" className="text-sm font-medium flex items-center gap-2">
+                <Briefcase className="w-4 h-4" />
+                Your Profession (Optional)
+              </Label>
+              <Select value={profession} onValueChange={(value) => {
+                if (value === 'add_new') {
+                  setShowCustomInput(true);
+                } else {
+                  setProfession(value);
+                  setShowCustomInput(false);
+                }
+              }}>
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Select your profession" />
+                </SelectTrigger>
+                <SelectContent>
+                  {professions.map((prof) => (
+                    <SelectItem key={prof} value={prof}>
+                      {prof}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="add_new" className="text-primary font-medium">
+                    <div className="flex items-center gap-2">
+                      <Plus className="w-4 h-4" />
+                      Add Custom Profession
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              {showCustomInput && (
+                <div className="flex gap-2 mt-2">
+                  <Input
+                    placeholder="Enter your profession"
+                    value={customProfession}
+                    onChange={(e) => setCustomProfession(e.target.value)}
+                    className="h-10"
+                  />
+                  <Button 
+                    type="button"
+                    onClick={handleAddCustomProfession}
+                    disabled={!customProfession.trim()}
+                    size="sm"
+                  >
+                    Add
+                  </Button>
+                </div>
               )}
             </div>
 

@@ -19,12 +19,14 @@ const Index = () => {
   const [currentView, setCurrentView] = useState<AppView>('splash');
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [userAge, setUserAge] = useState<number | null>(null);
+  const [userProfession, setUserProfession] = useState<string | null>(null);
   const [hasUnlockedLevel2, setHasUnlockedLevel2] = useState(false);
 
   const handleSplashComplete = () => setCurrentView('quote');
   const handleQuoteBegin = () => setCurrentView('age-input');
-  const handleAgeSubmit = (age: number) => {
+  const handleAgeSubmit = (age: number, profession?: string) => {
     setUserAge(age);
+    setUserProfession(profession || null);
     setCurrentView('character-selection');
   };
   const handleCharacterSelect = (character: Character) => {

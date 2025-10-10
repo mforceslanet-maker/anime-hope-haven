@@ -3,6 +3,7 @@ export interface StoryProgress {
   completedScenarios: string[];
   unlockedFeatures: string[];
   userAge?: number;
+  userProfession?: string;
   lastActiveDate?: string;
 }
 
