@@ -30,6 +30,7 @@ export type AppScreen =
   | 'splash'
   | 'quote'
   | 'age-input'
+  | 'personalized-motivation'
   | 'character-selection'
   | 'home'
   | 'story-game'

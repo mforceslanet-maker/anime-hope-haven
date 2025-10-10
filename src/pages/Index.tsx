@@ -4,6 +4,7 @@ import { AppScreen, StoryProgress } from '../types/story';
 import { SplashScreen } from '../components/SplashScreen';
 import { MotivationalQuoteScreen } from '../components/MotivationalQuoteScreen';
 import { AgeInputScreen } from '../components/AgeInputScreen';
+import { PersonalizedMotivationalScreen } from '../components/PersonalizedMotivationalScreen';
 import { CharacterSelection } from '../components/CharacterSelection';
 import { HomeScreen } from '../components/HomeScreen';
 import { ChatInterface } from '../components/ChatInterface';
@@ -27,8 +28,9 @@ const Index = () => {
   const handleAgeSubmit = (age: number, profession?: string) => {
     setUserAge(age);
     setUserProfession(profession || null);
-    setCurrentView('character-selection');
+    setCurrentView('personalized-motivation');
   };
+  const handlePersonalizedMotivationContinue = () => setCurrentView('character-selection');
   const handleCharacterSelect = (character: Character) => {
     setSelectedCharacter(character);
     setCurrentView('home');
@@ -46,6 +48,13 @@ const Index = () => {
   if (currentView === 'splash') return <SplashScreen onComplete={handleSplashComplete} />;
   if (currentView === 'quote') return <MotivationalQuoteScreen onBegin={handleQuoteBegin} />;
   if (currentView === 'age-input') return <AgeInputScreen onContinue={handleAgeSubmit} />;
+  if (currentView === 'personalized-motivation') return (
+    <PersonalizedMotivationalScreen 
+      age={userAge || 16} 
+      profession={userProfession || undefined} 
+      onContinue={handlePersonalizedMotivationContinue} 
+    />
+  );
   if (currentView === 'character-selection') return <CharacterSelection onCharacterSelect={handleCharacterSelect} />;
   if (currentView === 'home') return (
     <div>
