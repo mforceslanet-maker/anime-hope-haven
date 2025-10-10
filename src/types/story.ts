@@ -32,6 +32,7 @@ export type AppScreen =
   | 'age-input'
   | 'personalized-motivation'
   | 'character-selection'
+  | 'military-landing'
   | 'home'
   | 'story-game'
   | 'voice-confession'

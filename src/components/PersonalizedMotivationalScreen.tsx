@@ -1,5 +1,6 @@
 import { Button } from './ui/button';
 import { Heart, Sparkles, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface PersonalizedMotivationalScreenProps {
   profession?: string;
@@ -53,6 +54,8 @@ export const PersonalizedMotivationalScreen = ({
   age, 
   onContinue 
 }: PersonalizedMotivationalScreenProps) => {
+  const [breathePhase, setBreathePhase] = useState<'inhale' | 'exhale'>('inhale');
+  
   const messages = profession && motivationalMessages[profession] 
     ? motivationalMessages[profession]
     : motivationalMessages.default;
@@ -60,13 +63,37 @@ export const PersonalizedMotivationalScreen = ({
   const randomMessage = messages[Math.floor(Math.random() * messages.length)];
   const randomTip = relaxationTips[Math.floor(Math.random() * relaxationTips.length)];
 
+  // Breathing animation effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBreathePhase(prev => prev === 'inhale' ? 'exhale' : 'inhale');
+    }, 3000); // 3 seconds inhale, 3 seconds exhale
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-blue-900/20 p-4 sm:p-6">
       <div className="text-center max-w-3xl mx-auto animate-fade-in">
-        <div className="mb-8 flex justify-center gap-4">
-          <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-pink-500 animate-pulse" />
-          <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 text-purple-500 animate-pulse" style={{ animationDelay: '0.2s' }} />
-          <Star className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500 animate-pulse" style={{ animationDelay: '0.4s' }} />
+        {/* Breathing Heart Animation */}
+        <div className="mb-8 flex flex-col items-center gap-6">
+          <div className="relative">
+            <Heart 
+              className={`w-20 h-20 sm:w-24 sm:h-24 text-pink-500 transition-all duration-[3000ms] ease-in-out ${
+                breathePhase === 'inhale' ? 'scale-125 opacity-100' : 'scale-100 opacity-70'
+              }`}
+              fill="currentColor"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-xs sm:text-sm font-comfortaa text-foreground/70 mt-28">
+                {breathePhase === 'inhale' ? 'Breathe In...' : 'Breathe Out...'}
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-center gap-4">
+            <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-purple-500 animate-pulse" style={{ animationDelay: '0.2s' }} />
+            <Star className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500 animate-pulse" style={{ animationDelay: '0.4s' }} />
+          </div>
         </div>
 
         <div className="space-y-8 mb-10">

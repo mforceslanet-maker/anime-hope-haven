@@ -6,6 +6,7 @@ import { MotivationalQuoteScreen } from '../components/MotivationalQuoteScreen';
 import { AgeInputScreen } from '../components/AgeInputScreen';
 import { PersonalizedMotivationalScreen } from '../components/PersonalizedMotivationalScreen';
 import { CharacterSelection } from '../components/CharacterSelection';
+import { MilitaryPersonnelLandingScreen } from '../components/MilitaryPersonnelLandingScreen';
 import { HomeScreen } from '../components/HomeScreen';
 import { ChatInterface } from '../components/ChatInterface';
 import { WellnessDashboard } from '../components/WellnessDashboard';
@@ -30,7 +31,11 @@ const Index = () => {
     setUserProfession(profession || null);
     setCurrentView('personalized-motivation');
   };
-  const handlePersonalizedMotivationContinue = () => setCurrentView('character-selection');
+  const handlePersonalizedMotivationContinue = () => {
+    // Check if user is military personnel
+    const isMilitary = userProfession === 'Military Personnel' || userProfession === 'Military Student';
+    setCurrentView(isMilitary ? 'military-landing' : 'character-selection');
+  };
   const handleCharacterSelect = (character: Character) => {
     setSelectedCharacter(character);
     setCurrentView('home');
@@ -56,6 +61,7 @@ const Index = () => {
     />
   );
   if (currentView === 'character-selection') return <CharacterSelection onCharacterSelect={handleCharacterSelect} />;
+  if (currentView === 'military-landing') return <MilitaryPersonnelLandingScreen onCharacterSelect={handleCharacterSelect} />;
   if (currentView === 'home') return (
     <div>
       <HomeScreen onStartStoryGame={handleStartStoryGame} onCheckIn={handleCheckIn} onVoiceConfession={handleVoiceConfession} onSettings={handleSettings} />
