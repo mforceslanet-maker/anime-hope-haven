@@ -7,6 +7,9 @@ import { AgeInputScreen } from '../components/AgeInputScreen';
 import { PersonalizedMotivationalScreen } from '../components/PersonalizedMotivationalScreen';
 import { CharacterSelection } from '../components/CharacterSelection';
 import { MilitaryPersonnelLandingScreen } from '../components/MilitaryPersonnelLandingScreen';
+import { TeacherLandingScreen } from '../components/TeacherLandingScreen';
+import { StaffLandingScreen } from '../components/StaffLandingScreen';
+import { CommunityLandingScreen } from '../components/CommunityLandingScreen';
 import { HomeScreen } from '../components/HomeScreen';
 import { ChatInterface } from '../components/ChatInterface';
 import { WellnessDashboard } from '../components/WellnessDashboard';
@@ -26,15 +29,32 @@ const Index = () => {
 
   const handleSplashComplete = () => setCurrentView('quote');
   const handleQuoteBegin = () => setCurrentView('age-input');
-  const handleAgeSubmit = (age: number, profession?: string) => {
+  const handleAgeSubmit = (age: number, profession?: string, idNumber?: string) => {
     setUserAge(age);
     setUserProfession(profession || null);
     setCurrentView('personalized-motivation');
   };
   const handlePersonalizedMotivationContinue = () => {
-    // Check if user is military personnel
-    const isMilitary = userProfession === 'Military Personnel' || userProfession === 'Military Student';
-    setCurrentView(isMilitary ? 'military-landing' : 'character-selection');
+    // Route to appropriate landing page based on profession
+    switch (userProfession) {
+      case 'Military Student':
+        setCurrentView('character-selection'); // Students see the 4 student characters
+        break;
+      case 'Military Personnel':
+        setCurrentView('military-landing');
+        break;
+      case 'Teacher':
+        setCurrentView('teacher-landing');
+        break;
+      case 'Subordinate Staff':
+        setCurrentView('staff-landing');
+        break;
+      case 'Community':
+        setCurrentView('community-landing');
+        break;
+      default:
+        setCurrentView('character-selection');
+    }
   };
   const handleCharacterSelect = (character: Character) => {
     setSelectedCharacter(character);
@@ -62,6 +82,9 @@ const Index = () => {
   );
   if (currentView === 'character-selection') return <CharacterSelection onCharacterSelect={handleCharacterSelect} />;
   if (currentView === 'military-landing') return <MilitaryPersonnelLandingScreen onCharacterSelect={handleCharacterSelect} />;
+  if (currentView === 'teacher-landing') return <TeacherLandingScreen onCharacterSelect={handleCharacterSelect} />;
+  if (currentView === 'staff-landing') return <StaffLandingScreen onCharacterSelect={handleCharacterSelect} />;
+  if (currentView === 'community-landing') return <CommunityLandingScreen onCharacterSelect={handleCharacterSelect} />;
   if (currentView === 'home') return (
     <div>
       <HomeScreen onStartStoryGame={handleStartStoryGame} onCheckIn={handleCheckIn} onVoiceConfession={handleVoiceConfession} onSettings={handleSettings} />
