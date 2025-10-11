@@ -11,6 +11,10 @@ import { TeacherLandingScreen } from '../components/TeacherLandingScreen';
 import { StaffLandingScreen } from '../components/StaffLandingScreen';
 import { CommunityLandingScreen } from '../components/CommunityLandingScreen';
 import { HomeScreen } from '../components/HomeScreen';
+import { MilitaryHomeScreen } from '../components/MilitaryHomeScreen';
+import { TeacherHomeScreen } from '../components/TeacherHomeScreen';
+import { StaffHomeScreen } from '../components/StaffHomeScreen';
+import { CommunityHomeScreen } from '../components/CommunityHomeScreen';
 import { ChatInterface } from '../components/ChatInterface';
 import { WellnessDashboard } from '../components/WellnessDashboard';
 import { StoryGameScreen } from '../components/StoryGameScreen';
@@ -85,18 +89,39 @@ const Index = () => {
   if (currentView === 'teacher-landing') return <TeacherLandingScreen onCharacterSelect={handleCharacterSelect} />;
   if (currentView === 'staff-landing') return <StaffLandingScreen onCharacterSelect={handleCharacterSelect} />;
   if (currentView === 'community-landing') return <CommunityLandingScreen onCharacterSelect={handleCharacterSelect} />;
-  if (currentView === 'home') return (
-    <div>
-      <HomeScreen onStartStoryGame={handleStartStoryGame} onCheckIn={handleCheckIn} onVoiceConfession={handleVoiceConfession} onSettings={handleSettings} />
-      {hasUnlockedLevel2 && (
-        <div className="fixed bottom-4 right-4 z-50 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg">
-          <p className="text-sm mb-2">🎉 Level 2 Available!</p>
-          <button onClick={() => setCurrentView('level2')} className="text-xs bg-white text-primary px-3 py-1 rounded">Try Level 2</button>
-        </div>
-      )}
-      <div className="fixed bottom-4 left-4 z-40 max-w-sm"><TrialManager onTrialUpdate={() => {}} /></div>
-    </div>
-  );
+  if (currentView === 'home') {
+    // Render different home screens based on profession
+    let HomeComponent;
+    switch (userProfession) {
+      case 'Military Personnel':
+        HomeComponent = MilitaryHomeScreen;
+        break;
+      case 'Teacher':
+        HomeComponent = TeacherHomeScreen;
+        break;
+      case 'Subordinate Staff':
+        HomeComponent = StaffHomeScreen;
+        break;
+      case 'Community':
+        HomeComponent = CommunityHomeScreen;
+        break;
+      default:
+        HomeComponent = HomeScreen; // Military Students get the original HomeScreen
+    }
+
+    return (
+      <div>
+        <HomeComponent onStartStoryGame={handleStartStoryGame} onCheckIn={handleCheckIn} onVoiceConfession={handleVoiceConfession} onSettings={handleSettings} />
+        {hasUnlockedLevel2 && (
+          <div className="fixed bottom-4 right-4 z-50 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg">
+            <p className="text-sm mb-2">🎉 Level 2 Available!</p>
+            <button onClick={() => setCurrentView('level2')} className="text-xs bg-white text-primary px-3 py-1 rounded">Try Level 2</button>
+          </div>
+        )}
+        <div className="fixed bottom-4 left-4 z-40 max-w-sm"><TrialManager onTrialUpdate={() => {}} /></div>
+      </div>
+    );
+  }
   if (currentView === 'story-game') return <StoryGameScreen onBack={handleBackToHome} userAge={userAge || 16} onLevelUnlocked={handleLevelUnlocked} />;
   if (currentView === 'level2') return <Level2Screen onBack={handleBackToHome} userAge={userAge || 16} />;
   if (currentView === 'chat' && selectedCharacter) return <ChatInterface character={selectedCharacter} onBack={handleBackToHome} />;

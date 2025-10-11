@@ -3,7 +3,7 @@ import kiraImage from '../assets/character-1.jpg';
 import hanaImage from '../assets/character-2.jpg';
 import yukiImage from '../assets/character-4.jpg';
 import soraImage from '../assets/character-6.jpg';
-import militaryTherapistImage from '../assets/character-3.jpg';
+import militaryTherapistImage from '../assets/military-therapist.jpg';
 
 export const characters: Character[] = [
   {
