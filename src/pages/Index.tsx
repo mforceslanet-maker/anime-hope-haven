@@ -78,13 +78,14 @@ const Index = () => {
     <PersonalizedMotivationalScreen 
       age={userAge || 16} 
       profession={userProfession || undefined} 
-      onContinue={handlePersonalizedMotivationContinue} 
+      onContinue={handlePersonalizedMotivationContinue}
+      onBack={() => setCurrentView('age-input')}
     />
   );
-  if (currentView === 'character-selection') return <CharacterSelection onCharacterSelect={handleCharacterSelect} />;
-  if (currentView === 'military-landing') return <MilitaryPersonnelLandingScreen onCharacterSelect={handleCharacterSelect} />;
-  if (currentView === 'teacher-landing') return <TeacherLandingScreen onCharacterSelect={handleCharacterSelect} />;
-  if (currentView === 'staff-landing') return <StaffLandingScreen onCharacterSelect={handleCharacterSelect} />;
+  if (currentView === 'character-selection') return <CharacterSelection onCharacterSelect={handleCharacterSelect} onBack={() => setCurrentView('personalized-motivation')} />;
+  if (currentView === 'military-landing') return <MilitaryPersonnelLandingScreen onCharacterSelect={handleCharacterSelect} onBack={() => setCurrentView('personalized-motivation')} />;
+  if (currentView === 'teacher-landing') return <TeacherLandingScreen onCharacterSelect={handleCharacterSelect} onBack={() => setCurrentView('personalized-motivation')} />;
+  if (currentView === 'staff-landing') return <StaffLandingScreen onCharacterSelect={handleCharacterSelect} onBack={() => setCurrentView('personalized-motivation')} />;
   if (currentView === 'community-landing') return <CommunityLandingScreen onCharacterSelect={handleCharacterSelect} />;
   if (currentView === 'home') {
     // Render different home screens based on profession
@@ -105,7 +106,28 @@ const Index = () => {
 
     return (
       <div>
-        <HomeComponent onStartStoryGame={handleStartStoryGame} onCheckIn={handleCheckIn} onVoiceConfession={handleVoiceConfession} onSettings={handleSettings} />
+        <HomeComponent 
+          onStartStoryGame={handleStartStoryGame} 
+          onCheckIn={handleCheckIn} 
+          onVoiceConfession={handleVoiceConfession} 
+          onSettings={handleSettings}
+          onBack={() => {
+            // Route back based on profession
+            switch (userProfession) {
+              case 'Military Personnel':
+                setCurrentView('military-landing');
+                break;
+              case 'Teacher':
+                setCurrentView('teacher-landing');
+                break;
+              case 'Subordinate Staff':
+                setCurrentView('staff-landing');
+                break;
+              default:
+                setCurrentView('character-selection');
+            }
+          }}
+        />
         {hasUnlockedLevel2 && (
           <div className="fixed bottom-4 right-4 z-50 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg">
             <p className="text-sm mb-2">🎉 Level 2 Available!</p>

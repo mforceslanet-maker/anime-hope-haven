@@ -1,10 +1,12 @@
-import { Briefcase, Users, Heart, Music } from 'lucide-react';
+import { Briefcase, Users, Heart, Music, ArrowLeft } from 'lucide-react';
 import { Character } from '../types/character';
 import { CharacterCard } from './CharacterCard';
 import { useState, useEffect } from 'react';
+import { Button } from './ui/button';
 
 interface StaffLandingScreenProps {
   onCharacterSelect: (character: Character) => void;
+  onBack?: () => void;
 }
 
 const staffCharacters: Character[] = [
@@ -32,7 +34,7 @@ const staffCharacters: Character[] = [
   }
 ];
 
-export const StaffLandingScreen = ({ onCharacterSelect }: StaffLandingScreenProps) => {
+export const StaffLandingScreen = ({ onCharacterSelect, onBack }: StaffLandingScreenProps) => {
   const [wavePhase, setWavePhase] = useState(0);
 
   useEffect(() => {
@@ -44,6 +46,16 @@ export const StaffLandingScreen = ({ onCharacterSelect }: StaffLandingScreenProp
 
   return (
     <div className="min-h-screen p-4 sm:p-6 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-100 dark:from-orange-950/20 dark:via-amber-950/20 dark:to-yellow-900/20">
+      {onBack && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="fixed top-4 left-4 z-50 hover:bg-white/20 dark:hover:bg-black/20"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </Button>
+      )}
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 animate-fade-in">

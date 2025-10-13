@@ -1,17 +1,30 @@
-import { Shield, Heart } from 'lucide-react';
+import { Shield, Heart, ArrowLeft } from 'lucide-react';
 import { Character } from '../types/character';
 import { militaryTherapist } from '../data/characters';
 import { MilitaryTherapistCard } from './MilitaryTherapistCard';
+import { Button } from './ui/button';
 
 interface MilitaryPersonnelLandingScreenProps {
   onCharacterSelect: (character: Character) => void;
+  onBack?: () => void;
 }
 
 export const MilitaryPersonnelLandingScreen = ({ 
-  onCharacterSelect 
+  onCharacterSelect,
+  onBack
 }: MilitaryPersonnelLandingScreenProps) => {
   return (
     <div className="min-h-screen p-4 sm:p-6 bg-gradient-to-br from-blue-50 via-slate-50 to-blue-100 dark:from-blue-950/20 dark:via-slate-950/20 dark:to-blue-900/20">
+      {onBack && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="fixed top-4 left-4 z-50 hover:bg-white/20 dark:hover:bg-black/20"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </Button>
+      )}
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 animate-fade-in">

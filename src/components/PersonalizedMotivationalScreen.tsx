@@ -1,11 +1,12 @@
 import { Button } from './ui/button';
-import { Heart, Sparkles, Star } from 'lucide-react';
+import { Heart, Sparkles, Star, ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface PersonalizedMotivationalScreenProps {
   profession?: string;
   age: number;
   onContinue: () => void;
+  onBack?: () => void;
 }
 
 const motivationalMessages: Record<string, string[]> = {
@@ -52,7 +53,8 @@ const relaxationTips = [
 export const PersonalizedMotivationalScreen = ({ 
   profession, 
   age, 
-  onContinue 
+  onContinue,
+  onBack
 }: PersonalizedMotivationalScreenProps) => {
   const [breathePhase, setBreathePhase] = useState<'inhale' | 'exhale'>('inhale');
   
@@ -74,6 +76,16 @@ export const PersonalizedMotivationalScreen = ({
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-blue-900/20 p-4 sm:p-6">
+      {onBack && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="fixed top-4 left-4 z-50 hover:bg-white/20 dark:hover:bg-black/20"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </Button>
+      )}
       <div className="text-center max-w-3xl mx-auto animate-fade-in">
         {/* Breathing Heart Animation */}
         <div className="mb-8 flex flex-col items-center gap-6">

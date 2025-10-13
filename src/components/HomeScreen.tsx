@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Gamepad2, Heart, Mic, Settings, Bell } from 'lucide-react';
+import { Gamepad2, Heart, Mic, Settings, Bell, ArrowLeft } from 'lucide-react';
 
 interface HomeScreenProps {
   onStartStoryGame: () => void;
   onCheckIn: () => void;
   onVoiceConfession: () => void;
   onSettings: () => void;
+  onBack?: () => void;
   userName?: string;
 }
 
@@ -16,6 +17,7 @@ export const HomeScreen = ({
   onCheckIn, 
   onVoiceConfession, 
   onSettings,
+  onBack,
   userName = "Friend" 
 }: HomeScreenProps) => {
   const [showReminder, setShowReminder] = useState(false);
@@ -75,7 +77,18 @@ export const HomeScreen = ({
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8 animate-fade-in">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-8"></div>
+            {onBack ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onBack}
+                className="hover:bg-white/20 w-8 h-8 sm:w-10 sm:h-10"
+              >
+                <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+              </Button>
+            ) : (
+              <div className="w-8"></div>
+            )}
             <h1 className="text-xl sm:text-2xl md:text-3xl font-comfortaa font-bold text-foreground">
               Welcome back, {userName}!
             </h1>

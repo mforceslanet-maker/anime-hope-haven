@@ -1,10 +1,12 @@
-import { GraduationCap, BookOpen, Heart, Sparkles } from 'lucide-react';
+import { GraduationCap, BookOpen, Heart, Sparkles, ArrowLeft } from 'lucide-react';
 import { Character } from '../types/character';
 import { CharacterCard } from './CharacterCard';
 import { useState, useEffect } from 'react';
+import { Button } from './ui/button';
 
 interface TeacherLandingScreenProps {
   onCharacterSelect: (character: Character) => void;
+  onBack?: () => void;
 }
 
 const teacherCharacters: Character[] = [
@@ -32,7 +34,7 @@ const teacherCharacters: Character[] = [
   }
 ];
 
-export const TeacherLandingScreen = ({ onCharacterSelect }: TeacherLandingScreenProps) => {
+export const TeacherLandingScreen = ({ onCharacterSelect, onBack }: TeacherLandingScreenProps) => {
   const [pulsePhase, setPulsePhase] = useState(0);
 
   useEffect(() => {
@@ -44,6 +46,16 @@ export const TeacherLandingScreen = ({ onCharacterSelect }: TeacherLandingScreen
 
   return (
     <div className="min-h-screen p-4 sm:p-6 bg-gradient-to-br from-emerald-50 via-teal-50 to-green-100 dark:from-emerald-950/20 dark:via-teal-950/20 dark:to-green-900/20">
+      {onBack && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="fixed top-4 left-4 z-50 hover:bg-white/20 dark:hover:bg-black/20"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </Button>
+      )}
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 animate-fade-in">

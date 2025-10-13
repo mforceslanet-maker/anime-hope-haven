@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { BookHeart, Heart, MessageCircle, GraduationCap, Users, Settings, Sparkles } from 'lucide-react';
+import { BookHeart, Heart, MessageCircle, GraduationCap, Users, Settings, Sparkles, ArrowLeft } from 'lucide-react';
 
 interface TeacherHomeScreenProps {
   onStartStoryGame: () => void;
   onCheckIn: () => void;
   onVoiceConfession: () => void;
   onSettings: () => void;
+  onBack?: () => void;
   userName?: string;
 }
 
@@ -16,6 +17,7 @@ export const TeacherHomeScreen = ({
   onCheckIn, 
   onVoiceConfession, 
   onSettings,
+  onBack,
   userName = "Educator" 
 }: TeacherHomeScreenProps) => {
   const [sparkle, setSparkle] = useState(false);
@@ -33,7 +35,18 @@ export const TeacherHomeScreen = ({
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-10"></div>
+            {onBack ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onBack}
+                className="hover:bg-white/20 w-10 h-10"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </Button>
+            ) : (
+              <div className="w-10"></div>
+            )}
             <div className="flex items-center gap-3">
               <GraduationCap className={`w-8 h-8 text-teacher transition-all duration-500 ${sparkle ? 'scale-110' : 'scale-100'}`} />
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-comfortaa font-bold text-teacher">

@@ -2,15 +2,27 @@ import { Character } from '../types/character';
 import { characters, militaryTherapist } from '../data/characters';
 import { CharacterCard } from './CharacterCard';
 import { MilitaryTherapistCard } from './MilitaryTherapistCard';
-import { Heart, Shield, Users } from 'lucide-react';
+import { Heart, Shield, Users, ArrowLeft } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface CharacterSelectionProps {
   onCharacterSelect: (character: Character) => void;
+  onBack?: () => void;
 }
 
-export const CharacterSelection = ({ onCharacterSelect }: CharacterSelectionProps) => {
+export const CharacterSelection = ({ onCharacterSelect, onBack }: CharacterSelectionProps) => {
   return (
     <div className="min-h-screen p-4 sm:p-6 bg-gradient-peaceful">
+      {onBack && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="fixed top-4 left-4 z-50 hover:bg-white/20 dark:hover:bg-black/20"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </Button>
+      )}
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
