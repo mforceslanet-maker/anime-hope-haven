@@ -8,6 +8,7 @@ interface TeacherHomeScreenProps {
   onCheckIn: () => void;
   onVoiceConfession: () => void;
   onSettings: () => void;
+  onUnitSupport?: () => void;
   onBack?: () => void;
   userName?: string;
 }

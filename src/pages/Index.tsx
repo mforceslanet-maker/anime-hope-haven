@@ -20,9 +20,10 @@ import { WellnessDashboard } from '../components/WellnessDashboard';
 import { StoryGameScreen } from '../components/StoryGameScreen';
 import { Level2Screen } from '../components/Level2Screen';
 import { TrialManager } from '../components/TrialManager';
+import { UnitSupportNetworkScreen } from '../components/UnitSupportNetworkScreen';
 import { toast } from '../hooks/use-toast';
 
-type AppView = AppScreen | 'dashboard' | 'story-game' | 'level2';
+type AppView = AppScreen | 'dashboard' | 'story-game' | 'level2' | 'unit-support';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<AppView>('splash');
@@ -65,6 +66,7 @@ const Index = () => {
   const handleCheckIn = () => setCurrentView('dashboard');
   const handleVoiceConfession = () => setCurrentView('chat');
   const handleSettings = () => toast({ title: "Settings", description: "Settings panel coming soon!" });
+  const handleUnitSupport = () => setCurrentView('unit-support');
   const handleBackToHome = () => setCurrentView('home');
   const handleLevelUnlocked = () => {
     setHasUnlockedLevel2(true);
@@ -111,6 +113,7 @@ const Index = () => {
           onCheckIn={handleCheckIn} 
           onVoiceConfession={handleVoiceConfession} 
           onSettings={handleSettings}
+          onUnitSupport={handleUnitSupport}
           onBack={() => {
             // Route back based on profession
             switch (userProfession) {
@@ -140,6 +143,7 @@ const Index = () => {
   }
   if (currentView === 'story-game') return <StoryGameScreen onBack={handleBackToHome} userAge={userAge || 16} onLevelUnlocked={handleLevelUnlocked} />;
   if (currentView === 'level2') return <Level2Screen onBack={handleBackToHome} userAge={userAge || 16} />;
+  if (currentView === 'unit-support') return <UnitSupportNetworkScreen onBack={handleBackToHome} />;
   if (currentView === 'chat' && selectedCharacter) return <ChatInterface character={selectedCharacter} onBack={handleBackToHome} />;
   if (currentView === 'dashboard' && selectedCharacter) return <WellnessDashboard character={selectedCharacter} onBack={handleBackToHome} onStartChat={() => setCurrentView('chat')} />;
   

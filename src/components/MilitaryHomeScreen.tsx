@@ -8,6 +8,7 @@ interface MilitaryHomeScreenProps {
   onCheckIn: () => void;
   onVoiceConfession: () => void;
   onSettings: () => void;
+  onUnitSupport: () => void;
   onBack?: () => void;
   userName?: string;
 }
@@ -17,6 +18,7 @@ export const MilitaryHomeScreen = ({
   onCheckIn, 
   onVoiceConfession, 
   onSettings,
+  onUnitSupport,
   onBack,
   userName = "Soldier" 
 }: MilitaryHomeScreenProps) => {
@@ -144,7 +146,7 @@ export const MilitaryHomeScreen = ({
 
           {/* Unit Support Network */}
           <Card className="group bg-slate-800/50 backdrop-blur-sm border-2 border-military/30 hover:border-military hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300 hover:-translate-y-1 cursor-pointer">
-            <CardContent className="p-6">
+            <CardContent className="p-6" onClick={onUnitSupport}>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-14 h-14 bg-military/20 rounded-lg flex items-center justify-center border border-military/30 group-hover:bg-military/30 transition-all">
                   <Users className="w-7 h-7 text-military" />
