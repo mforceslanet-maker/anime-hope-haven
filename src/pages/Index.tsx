@@ -53,9 +53,6 @@ const Index = () => {
       case 'Subordinate Staff':
         setCurrentView('staff-landing');
         break;
-      case 'Community':
-        setCurrentView('community-landing');
-        break;
       default:
         setCurrentView('character-selection');
     }
@@ -101,9 +98,6 @@ const Index = () => {
         break;
       case 'Subordinate Staff':
         HomeComponent = StaffHomeScreen;
-        break;
-      case 'Community':
-        HomeComponent = CommunityHomeScreen;
         break;
       default:
         HomeComponent = HomeScreen; // Military Students get the original HomeScreen

@@ -12,8 +12,7 @@ const PROFESSIONS = [
   { value: 'Military Student', label: 'Military Students', idLabel: 'Admission Number', idPlaceholder: 'Enter your admission number' },
   { value: 'Military Personnel', label: 'Military Personnel', idLabel: 'Service Number', idPlaceholder: 'Enter your service number' },
   { value: 'Subordinate Staff', label: 'Subordinate Staffs', idLabel: 'Employee Number', idPlaceholder: 'Enter your employee number' },
-  { value: 'Teacher', label: 'Teachers', idLabel: 'TSC Number', idPlaceholder: 'Enter your TSC number' },
-  { value: 'Community', label: 'Community', idLabel: 'ID Number', idPlaceholder: 'Enter your ID number' }
+  { value: 'Teacher', label: 'Teachers', idLabel: 'TSC Number', idPlaceholder: 'Enter your TSC number' }
 ];
 
 export const AgeInputScreen = ({ onContinue }: AgeInputScreenProps) => {
