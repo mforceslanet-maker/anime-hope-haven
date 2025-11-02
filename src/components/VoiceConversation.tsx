@@ -117,16 +117,7 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
     recognition.onend = () => {
       setIsListening(false);
-      // Restart listening if conversation is still active and not speaking
-      if (conversationActive && !isSpeaking) {
-        setTimeout(() => {
-          try {
-            recognition.start();
-          } catch (e) {
-            console.error('Failed to restart recognition:', e);
-          }
-        }, 500);
-      }
+      console.log('Recognition ended, isSpeaking:', isSpeaking, 'conversationActive:', conversationActive);
     };
 
     recognitionRef.current = recognition;
@@ -140,6 +131,7 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
   const getAIResponse = async (userMessage: string) => {
     try {
+      console.log('Getting AI response for:', userMessage);
       const { data, error } = await supabase.functions.invoke('chat-with-perplexity', {
         body: {
           message: userMessage,
@@ -151,9 +143,23 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       if (error) throw error;
 
       const responseText = data.response || "I'm here to listen.";
+      console.log('Got AI response, now speaking:', responseText);
       
-      // Speak the response
+      // Speak the response and wait for it to finish
       await speakText(responseText);
+      
+      console.log('Finished speaking, restarting listening');
+      // Restart listening after speaking is done
+      if (conversationActive && recognitionRef.current) {
+        setTimeout(() => {
+          try {
+            recognitionRef.current.start();
+            console.log('Restarted listening');
+          } catch (e) {
+            console.error('Failed to restart after speaking:', e);
+          }
+        }, 500);
+      }
       
     } catch (error) {
       console.error('Error getting AI response:', error);
