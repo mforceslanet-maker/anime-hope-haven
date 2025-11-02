@@ -217,7 +217,7 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
     });
   };
 
-  const startConversation = () => {
+  const startConversation = async () => {
     if (!recognitionRef.current) {
       toast({
         title: "Not Ready",
@@ -231,9 +231,13 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
     
     toast({
       title: "Conversation Started",
-      description: `Start speaking with ${character.name}`,
+      description: `${character.name} is greeting you...`,
     });
 
+    // Speak the character's greeting first
+    await speakText(character.greeting);
+
+    // Then start listening for user's response
     try {
       recognitionRef.current.start();
     } catch (error) {
