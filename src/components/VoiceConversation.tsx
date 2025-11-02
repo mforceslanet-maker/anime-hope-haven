@@ -284,30 +284,56 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
         </p>
       </div>
 
-      {/* Animated orb */}
-      <div className="relative mb-20">
+      {/* Character with speaking animation */}
+      <div className="relative mb-12">
+        {/* Animated glow rings when speaking */}
+        {isSpeaking && (
+          <>
+            <div className="absolute inset-0 -m-8 rounded-full bg-gradient-to-br from-blue-400/30 to-blue-600/30 animate-pulse" />
+            <div className="absolute inset-0 -m-12 rounded-full bg-gradient-to-br from-blue-300/20 to-blue-500/20 animate-pulse" style={{ animationDelay: '0.2s' }} />
+            <div className="absolute inset-0 -m-16 rounded-full bg-gradient-to-br from-blue-200/10 to-blue-400/10 animate-pulse" style={{ animationDelay: '0.4s' }} />
+          </>
+        )}
+        
+        {/* Listening indicator */}
+        {isListening && (
+          <div className="absolute inset-0 -m-6 rounded-full border-4 border-blue-400 animate-pulse" />
+        )}
+        
+        {/* Character image */}
         <div 
-          className={`w-64 h-64 rounded-full transition-all duration-300 ${
-            isSpeaking 
-              ? 'bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 animate-pulse scale-110' 
-              : isListening 
-              ? 'bg-gradient-to-br from-blue-300 via-blue-400 to-blue-500 animate-pulse' 
-              : 'bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400'
+          className={`relative w-64 h-64 rounded-full overflow-hidden transition-all duration-300 ${
+            isSpeaking ? 'scale-110 shadow-2xl' : isListening ? 'scale-105 shadow-xl' : 'shadow-lg'
           }`}
           style={{
-            boxShadow: isSpeaking || isListening 
-              ? '0 0 60px rgba(59, 130, 246, 0.6)' 
-              : '0 0 30px rgba(59, 130, 246, 0.3)',
+            boxShadow: isSpeaking 
+              ? `0 0 80px rgba(59, 130, 246, 0.8), 0 0 40px hsl(var(--${character.color}) / 0.6)` 
+              : isListening 
+              ? '0 0 40px rgba(59, 130, 246, 0.5)' 
+              : '0 0 20px rgba(0, 0, 0, 0.2)',
           }}
-        />
+        >
+          <img 
+            src={character.image} 
+            alt={character.name}
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Mouth glow overlay when speaking */}
+          {isSpeaking && (
+            <div className="absolute inset-0 bg-gradient-to-t from-blue-500/40 via-transparent to-transparent animate-pulse" />
+          )}
+        </div>
         
-        {/* Status indicator */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        {/* Status icon overlay */}
+        <div className="absolute bottom-4 right-4 bg-background/80 backdrop-blur-sm rounded-full p-3 shadow-lg">
           {isSpeaking ? (
-            <Volume2 className="w-16 h-16 text-white animate-pulse" />
+            <Volume2 className="w-6 h-6 text-blue-500 animate-pulse" />
           ) : isListening ? (
-            <Mic className="w-16 h-16 text-white animate-pulse" />
-          ) : null}
+            <Mic className="w-6 h-6 text-blue-400 animate-pulse" />
+          ) : (
+            <Mic className="w-6 h-6 text-muted-foreground" />
+          )}
         </div>
       </div>
 
