@@ -34,6 +34,24 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
   useEffect(() => {
     const initializeChat = async () => {
       try {
+        // Get client IP and assign room
+        const { data: ipData } = await supabase.functions.invoke('get-client-ip');
+        const clientIp = ipData?.ip || 'unknown';
+
+        // Get or create room for this IP
+        const { data: roomId } = await supabase.rpc('get_or_create_room', {
+          p_ip_address: clientIp
+        });
+
+        // Get room name for display
+        const { data: roomData } = await supabase
+          .from('rooms')
+          .select('room_name')
+          .eq('id', roomId)
+          .single();
+
+        console.log('Connected from:', roomData?.room_name || 'Unknown Room');
+
         // Get or create anonymous profile
         const anonymousId = localStorage.getItem('anonymousId') || crypto.randomUUID();
         localStorage.setItem('anonymousId', anonymousId);
@@ -41,7 +59,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
         // Check if profile exists
         let { data: profile } = await supabase
           .from('profiles')
-          .select('id')
+          .select('id, room_id')
           .eq('anonymous_id', anonymousId)
           .maybeSingle();
 
@@ -49,12 +67,22 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
         if (!profile) {
           const { data: newProfile, error } = await supabase
             .from('profiles')
-            .insert({ anonymous_id: anonymousId, current_mood: currentMood })
+            .insert({ 
+              anonymous_id: anonymousId, 
+              current_mood: currentMood,
+              room_id: roomId 
+            })
             .select()
             .single();
 
           if (error) throw error;
           profile = newProfile;
+        } else if (!profile.room_id) {
+          // Update existing profile with room_id
+          await supabase
+            .from('profiles')
+            .update({ room_id: roomId })
+            .eq('id', profile.id);
         }
 
         setProfileId(profile.id);

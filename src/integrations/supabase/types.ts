@@ -90,6 +90,7 @@ export type Database = {
           created_at: string
           current_mood: string | null
           id: string
+          room_id: string | null
           updated_at: string
           user_id: string | null
         }
@@ -98,6 +99,7 @@ export type Database = {
           created_at?: string
           current_mood?: string | null
           id?: string
+          room_id?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -106,8 +108,44 @@ export type Database = {
           created_at?: string
           current_mood?: string | null
           id?: string
+          room_id?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rooms: {
+        Row: {
+          first_seen: string
+          id: string
+          ip_address: string
+          last_seen: string
+          room_name: string
+          session_count: number | null
+        }
+        Insert: {
+          first_seen?: string
+          id?: string
+          ip_address: string
+          last_seen?: string
+          room_name: string
+          session_count?: number | null
+        }
+        Update: {
+          first_seen?: string
+          id?: string
+          ip_address?: string
+          last_seen?: string
+          room_name?: string
+          session_count?: number | null
         }
         Relationships: []
       }
@@ -116,7 +154,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_or_create_room: { Args: { p_ip_address: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
