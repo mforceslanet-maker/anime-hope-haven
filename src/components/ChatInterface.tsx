@@ -196,53 +196,60 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
 
       {/* Messages */}
       <div className="flex-1 max-w-4xl mx-auto w-full p-3 sm:p-4 overflow-y-auto">
-        <div className="space-y-6 mb-4">
+        <div className="space-y-8 mb-4">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex items-start gap-3 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+              className={`flex items-end gap-4 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
             >
               {message.sender === 'character' && (
                 <img
                   src={character.image}
                   alt={character.name}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover flex-shrink-0 shadow-lg"
+                  className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl object-cover flex-shrink-0 shadow-xl"
                 />
               )}
               
-              <div className={`relative max-w-[75%] ${message.sender === 'user' ? 'mr-4' : 'ml-2'}`}>
-                {/* Speech bubble tail */}
+              <div className={`relative max-w-[65%] ${message.sender === 'user' ? 'mr-4' : 'ml-2'}`}>
+                {/* Cloud speech bubble tail */}
                 {message.sender === 'character' && (
                   <div 
-                    className="absolute left-0 top-4 w-0 h-0 -ml-2"
+                    className="absolute left-0 bottom-8 w-0 h-0 -ml-3"
                     style={{
-                      borderTop: '10px solid transparent',
-                      borderBottom: '10px solid transparent',
-                      borderRight: '10px solid hsl(var(--card))',
+                      borderTop: '15px solid transparent',
+                      borderBottom: '15px solid transparent',
+                      borderRight: '15px solid hsl(var(--card))',
+                      filter: 'drop-shadow(-2px 2px 4px rgba(0,0,0,0.1))',
                     }}
                   />
                 )}
                 {message.sender === 'user' && (
                   <div 
-                    className="absolute right-0 top-4 w-0 h-0 -mr-2"
+                    className="absolute right-0 bottom-8 w-0 h-0 -mr-3"
                     style={{
-                      borderTop: '10px solid transparent',
-                      borderBottom: '10px solid transparent',
-                      borderLeft: `10px solid hsl(var(--${character.color}))`,
+                      borderTop: '15px solid transparent',
+                      borderBottom: '15px solid transparent',
+                      borderLeft: `15px solid hsl(var(--${character.color}))`,
+                      filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.1))',
                     }}
                   />
                 )}
                 
-                {/* Message bubble */}
+                {/* Cloud-style message bubble */}
                 <div 
-                  className={`rounded-2xl p-4 shadow-md ${
+                  className={`relative p-5 shadow-lg ${
                     message.sender === 'user' 
                       ? 'text-white' 
-                      : 'bg-card text-foreground'
+                      : 'bg-card text-foreground border-2'
                   }`}
-                  style={message.sender === 'user' ? {
-                    backgroundColor: `hsl(var(--${character.color}))`,
-                  } : {}}
+                  style={{
+                    ...(message.sender === 'user' ? {
+                      backgroundColor: `hsl(var(--${character.color}))`,
+                    } : {
+                      borderColor: `hsl(var(--${character.color}) / 0.3)`,
+                    }),
+                    borderRadius: '30px 30px 30px 10px',
+                  }}
                 >
                   {message.emotion && message.sender === 'user' && (
                     <div className="text-xs mb-2 opacity-90 font-medium">
@@ -258,30 +265,37 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
           ))}
           
           {isTyping && (
-            <div className="flex items-start gap-3">
+            <div className="flex items-end gap-4">
               <img
                 src={character.image}
                 alt={character.name}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover flex-shrink-0 shadow-lg"
+                className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl object-cover flex-shrink-0 shadow-xl"
               />
               
-              <div className="relative max-w-[75%] ml-2">
-                {/* Speech bubble tail */}
+              <div className="relative max-w-[65%] ml-2">
+                {/* Cloud speech bubble tail */}
                 <div 
-                  className="absolute left-0 top-4 w-0 h-0 -ml-2"
+                  className="absolute left-0 bottom-8 w-0 h-0 -ml-3"
                   style={{
-                    borderTop: '10px solid transparent',
-                    borderBottom: '10px solid transparent',
-                    borderRight: '10px solid hsl(var(--card))',
+                    borderTop: '15px solid transparent',
+                    borderBottom: '15px solid transparent',
+                    borderRight: '15px solid hsl(var(--card))',
+                    filter: 'drop-shadow(-2px 2px 4px rgba(0,0,0,0.1))',
                   }}
                 />
                 
                 {/* Typing indicator bubble */}
-                <div className="rounded-2xl p-4 bg-card shadow-md">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div 
+                  className="relative p-5 bg-card shadow-lg border-2"
+                  style={{
+                    borderColor: `hsl(var(--${character.color}) / 0.3)`,
+                    borderRadius: '30px 30px 30px 10px',
+                  }}
+                >
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 bg-primary/60 rounded-full animate-bounce"></div>
+                    <div className="w-3 h-3 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-3 h-3 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>
