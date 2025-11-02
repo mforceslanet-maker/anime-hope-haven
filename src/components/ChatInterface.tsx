@@ -196,44 +196,93 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
 
       {/* Messages */}
       <div className="flex-1 max-w-4xl mx-auto w-full p-3 sm:p-4 overflow-y-auto">
-        <div className="space-y-3 sm:space-y-4 mb-4">
+        <div className="space-y-6 mb-4">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`chat-bubble ${message.sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-character'} ${message.sender === 'user' ? 'max-w-[85%] ml-auto' : 'max-w-[85%]'}`}
+              className={`flex items-start gap-3 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
             >
-              <div className="flex items-start gap-2 sm:gap-3">
+              {message.sender === 'character' && (
+                <img
+                  src={character.image}
+                  alt={character.name}
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover flex-shrink-0 shadow-lg"
+                />
+              )}
+              
+              <div className={`relative max-w-[75%] ${message.sender === 'user' ? 'mr-4' : 'ml-2'}`}>
+                {/* Speech bubble tail */}
                 {message.sender === 'character' && (
-                  <img
-                    src={character.image}
-                    alt={character.name}
-                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0"
+                  <div 
+                    className="absolute left-0 top-4 w-0 h-0 -ml-2"
+                    style={{
+                      borderTop: '10px solid transparent',
+                      borderBottom: '10px solid transparent',
+                      borderRight: '10px solid hsl(var(--card))',
+                    }}
                   />
                 )}
-                <div className="flex-1 min-w-0">
+                {message.sender === 'user' && (
+                  <div 
+                    className="absolute right-0 top-4 w-0 h-0 -mr-2"
+                    style={{
+                      borderTop: '10px solid transparent',
+                      borderBottom: '10px solid transparent',
+                      borderLeft: `10px solid hsl(var(--${character.color}))`,
+                    }}
+                  />
+                )}
+                
+                {/* Message bubble */}
+                <div 
+                  className={`rounded-2xl p-4 shadow-md ${
+                    message.sender === 'user' 
+                      ? 'text-white' 
+                      : 'bg-card text-foreground'
+                  }`}
+                  style={message.sender === 'user' ? {
+                    backgroundColor: `hsl(var(--${character.color}))`,
+                  } : {}}
+                >
                   {message.emotion && message.sender === 'user' && (
-                    <div className={`emotion-indicator emotion-${message.emotion} text-xs mb-2 inline-flex`}>
+                    <div className="text-xs mb-2 opacity-90 font-medium">
                       Feeling {message.emotion}
                     </div>
                   )}
-                  <p className="text-sm sm:text-base leading-relaxed break-words">{message.content}</p>
+                  <p className="text-sm sm:text-base leading-relaxed break-words">
+                    {message.content}
+                  </p>
                 </div>
               </div>
             </div>
           ))}
           
           {isTyping && (
-            <div className="chat-bubble chat-bubble-character max-w-[85%]">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <img
-                  src={character.image}
-                  alt={character.name}
-                  className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover"
+            <div className="flex items-start gap-3">
+              <img
+                src={character.image}
+                alt={character.name}
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover flex-shrink-0 shadow-lg"
+              />
+              
+              <div className="relative max-w-[75%] ml-2">
+                {/* Speech bubble tail */}
+                <div 
+                  className="absolute left-0 top-4 w-0 h-0 -ml-2"
+                  style={{
+                    borderTop: '10px solid transparent',
+                    borderBottom: '10px solid transparent',
+                    borderRight: '10px solid hsl(var(--card))',
+                  }}
                 />
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                
+                {/* Typing indicator bubble */}
+                <div className="rounded-2xl p-4 bg-card shadow-md">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  </div>
                 </div>
               </div>
             </div>
