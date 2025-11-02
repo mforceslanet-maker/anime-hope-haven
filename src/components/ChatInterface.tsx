@@ -26,7 +26,90 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
   const [currentMood, setCurrentMood] = useState<EmotionalState>();
   const [isTyping, setIsTyping] = useState(false);
   const [showVoiceConversation, setShowVoiceConversation] = useState(false);
+  const [profileId, setProfileId] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize profile and load chat history
+  useEffect(() => {
+    const initializeChat = async () => {
+      try {
+        // Get or create anonymous profile
+        const anonymousId = localStorage.getItem('anonymousId') || crypto.randomUUID();
+        localStorage.setItem('anonymousId', anonymousId);
+
+        // Check if profile exists
+        let { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('anonymous_id', anonymousId)
+          .maybeSingle();
+
+        // Create profile if it doesn't exist
+        if (!profile) {
+          const { data: newProfile, error } = await supabase
+            .from('profiles')
+            .insert({ anonymous_id: anonymousId, current_mood: currentMood })
+            .select()
+            .single();
+
+          if (error) throw error;
+          profile = newProfile;
+        }
+
+        setProfileId(profile.id);
+
+        // Get or create chat session
+        let { data: session } = await supabase
+          .from('chat_sessions')
+          .select('id')
+          .eq('profile_id', profile.id)
+          .eq('character_id', character.id)
+          .order('last_message_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (!session) {
+          const { data: newSession, error } = await supabase
+            .from('chat_sessions')
+            .insert({
+              profile_id: profile.id,
+              character_id: character.id,
+              character_name: character.name
+            })
+            .select()
+            .single();
+
+          if (error) throw error;
+          session = newSession;
+        }
+
+        setSessionId(session.id);
+
+        // Load previous messages
+        const { data: previousMessages } = await supabase
+          .from('chat_messages')
+          .select('*')
+          .eq('session_id', session.id)
+          .order('created_at', { ascending: true });
+
+        if (previousMessages && previousMessages.length > 0) {
+          const loadedMessages = previousMessages.map(msg => ({
+            id: msg.id,
+            content: msg.content,
+            sender: msg.sender as 'user' | 'character',
+            timestamp: new Date(msg.created_at),
+            emotion: msg.emotion as EmotionalState | undefined
+          }));
+          setMessages(loadedMessages);
+        }
+      } catch (error) {
+        console.error('Error initializing chat:', error);
+      }
+    };
+
+    initializeChat();
+  }, [character.id, character.name, currentMood]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -98,11 +181,12 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
   };
 
   const sendMessage = async () => {
-    if (!currentMessage.trim()) return;
+    if (!currentMessage.trim() || !sessionId) return;
 
+    const userMessageContent = currentMessage;
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
-      content: currentMessage,
+      content: userMessageContent,
       sender: 'user',
       timestamp: new Date(),
       emotion: currentMood
@@ -112,9 +196,21 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
     setCurrentMessage('');
     setIsTyping(true);
 
+    // Save user message to database
+    try {
+      await supabase.from('chat_messages').insert({
+        session_id: sessionId,
+        content: userMessageContent,
+        sender: 'user',
+        emotion: currentMood
+      });
+    } catch (error) {
+      console.error('Error saving user message:', error);
+    }
+
     // Generate AI response
     setTimeout(async () => {
-      const aiContent = await generateAIResponse(currentMessage, currentMood);
+      const aiContent = await generateAIResponse(userMessageContent, currentMood);
       
       const characterResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -125,6 +221,17 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
 
       setMessages(prev => [...prev, characterResponse]);
       setIsTyping(false);
+
+      // Save character response to database
+      try {
+        await supabase.from('chat_messages').insert({
+          session_id: sessionId,
+          content: aiContent,
+          sender: 'character'
+        });
+      } catch (error) {
+        console.error('Error saving character message:', error);
+      }
     }, 1500);
   };
 
