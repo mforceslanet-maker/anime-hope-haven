@@ -276,6 +276,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_first_admin: {
+        Args: {
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       get_or_create_room: { Args: { p_ip_address: string }; Returns: string }
       has_role: {
         Args: {
