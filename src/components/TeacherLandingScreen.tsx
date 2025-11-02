@@ -3,6 +3,8 @@ import { Character } from '../types/character';
 import { CharacterCard } from './CharacterCard';
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
+import teacherFemaleBlack from '../assets/teacher-female-black.jpg';
+import teacherMaleBlack from '../assets/teacher-male-black.jpg';
 
 interface TeacherLandingScreenProps {
   onCharacterSelect: (character: Character) => void;
@@ -18,7 +20,7 @@ const teacherCharacters: Character[] = [
     personality: 'Empathetic, understanding, experienced in education system challenges',
     specialties: ['Stress Management', 'Career Guidance', 'Classroom Management Support'],
     color: 'from-emerald-400 to-teal-500',
-    image: '/placeholder.svg',
+    image: teacherFemaleBlack,
     greeting: 'Hello! I understand the unique challenges teachers face. Let\'s work together to maintain your passion for teaching.'
   },
   {
@@ -29,7 +31,7 @@ const teacherCharacters: Character[] = [
     personality: 'Wise, patient, practical advice from real experience',
     specialties: ['Professional Development', 'Student Behavior', 'Administrative Stress'],
     color: 'from-blue-400 to-indigo-500',
-    image: '/placeholder.svg',
+    image: teacherMaleBlack,
     greeting: 'Welcome, fellow educator. I\'ve been where you are, and I\'m here to help you succeed.'
   }
 ];

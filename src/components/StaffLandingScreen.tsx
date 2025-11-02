@@ -3,6 +3,8 @@ import { Character } from '../types/character';
 import { CharacterCard } from './CharacterCard';
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
+import staffFemaleBlack from '../assets/staff-female-black.jpg';
+import staffMaleBlack from '../assets/staff-male-black.jpg';
 
 interface StaffLandingScreenProps {
   onCharacterSelect: (character: Character) => void;
@@ -18,7 +20,7 @@ const staffCharacters: Character[] = [
     personality: 'Approachable, understanding, practical solutions',
     specialties: ['Work Stress', 'Team Dynamics', 'Career Development'],
     color: 'from-orange-400 to-amber-500',
-    image: '/placeholder.svg',
+    image: staffFemaleBlack,
     greeting: 'Hello! I\'m here to help you navigate workplace challenges and find balance.'
   },
   {
@@ -29,7 +31,7 @@ const staffCharacters: Character[] = [
     personality: 'Patient, insightful, focused on sustainable solutions',
     specialties: ['Burnout Prevention', 'Communication Skills', 'Personal Growth'],
     color: 'from-amber-400 to-yellow-500',
-    image: '/placeholder.svg',
+    image: staffMaleBlack,
     greeting: 'Welcome! Let\'s work together to create a healthier work experience for you.'
   }
 ];
