@@ -66,9 +66,20 @@ export default function RelaxationPlayer() {
         .from('relaxation_categories')
         .select('name, color')
         .eq('slug', slug)
-        .single();
+        .maybeSingle();
 
       if (categoryError) throw categoryError;
+      
+      if (!categoryData) {
+        toast({
+          title: 'Category Not Found',
+          description: 'This relaxation category does not exist',
+          variant: 'destructive',
+        });
+        navigate('/relaxation');
+        return;
+      }
+      
       setCategory(categoryData);
 
       // Load tracks
@@ -76,17 +87,30 @@ export default function RelaxationPlayer() {
         .from('relaxation_categories')
         .select('id')
         .eq('slug', slug)
-        .single();
+        .maybeSingle();
+
+      if (!categoryId) {
+        setTracks([]);
+        setLoading(false);
+        return;
+      }
 
       const { data: tracksData, error: tracksError } = await supabase
         .from('relaxation_music')
         .select('id, title, youtube_video_id, description')
-        .eq('category_id', categoryId?.id)
+        .eq('category_id', categoryId.id)
         .eq('is_active', true)
         .order('created_at');
 
       if (tracksError) throw tracksError;
-      setTracks(tracksData || []);
+      
+      // Clean video IDs (remove query parameters)
+      const cleanedTracks = (tracksData || []).map(track => ({
+        ...track,
+        youtube_video_id: track.youtube_video_id.split('?')[0].split('&')[0]
+      }));
+      
+      setTracks(cleanedTracks);
     } catch (error: any) {
       console.error('Error loading data:', error);
       toast({
