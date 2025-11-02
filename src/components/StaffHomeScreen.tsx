@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Briefcase, Heart, MessageSquare, TrendingUp, Users, Settings, Star, ArrowLeft } from 'lucide-react';
+import { Briefcase, Heart, MessageSquare, TrendingUp, Users, Settings, Star, ArrowLeft, Music } from 'lucide-react';
 
 interface StaffHomeScreenProps {
   onStartStoryGame: () => void;
@@ -22,6 +23,7 @@ export const StaffHomeScreen = ({
   userName = "Team Member" 
 }: StaffHomeScreenProps) => {
   const [pulse, setPulse] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -148,6 +150,26 @@ export const StaffHomeScreen = ({
               </div>
               <p className="text-sm text-muted-foreground">
                 Access resources and connect with peers who share similar experiences.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Wellness Center */}
+          <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 border-staff/20 hover:border-staff/50 md:col-span-2">
+            <CardContent className="p-6" onClick={() => navigate('/relaxation')}>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                  <Music className="w-7 h-7 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-comfortaa font-semibold text-foreground mb-1">
+                    Wellness Center
+                  </h3>
+                  <p className="text-xs text-muted-foreground">Relaxation music & meditation</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Access curated relaxation music to help you unwind and recharge. You deserve this time.
               </p>
             </CardContent>
           </Card>

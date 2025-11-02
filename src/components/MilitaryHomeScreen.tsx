@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Shield, Heart, Radio, Activity, BookOpen, Users, Settings, ArrowLeft } from 'lucide-react';
+import { Shield, Heart, Radio, Activity, BookOpen, Users, Settings, ArrowLeft, Music } from 'lucide-react';
 
 interface MilitaryHomeScreenProps {
   onStartStoryGame: () => void;
@@ -23,6 +24,7 @@ export const MilitaryHomeScreen = ({
   userName = "Soldier" 
 }: MilitaryHomeScreenProps) => {
   const [tacticalGlow, setTacticalGlow] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -160,6 +162,26 @@ export const MilitaryHomeScreen = ({
               </div>
               <p className="text-sm text-slate-400">
                 Access peer support and military family resources. No one serves alone.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Wellness Center */}
+          <Card className="group bg-slate-800/50 backdrop-blur-sm border-2 border-military/30 hover:border-military hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300 hover:-translate-y-1 cursor-pointer md:col-span-2">
+            <CardContent className="p-6" onClick={() => navigate('/relaxation')}>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 bg-military/20 rounded-lg flex items-center justify-center border border-military/30 group-hover:bg-military/30 transition-all">
+                  <Music className="w-7 h-7 text-military" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-comfortaa font-semibold text-white mb-1">
+                    Wellness Center
+                  </h3>
+                  <p className="text-xs text-slate-300">Relaxation music & meditation</p>
+                </div>
+              </div>
+              <p className="text-sm text-slate-400">
+                Access curated relaxation music for tactical recovery. Mental rest is mission critical.
               </p>
             </CardContent>
           </Card>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Home, Heart, MessageCircleHeart, Sparkles, Users, Settings, Smile } from 'lucide-react';
+import { Home, Heart, MessageCircleHeart, Sparkles, Users, Settings, Smile, Music } from 'lucide-react';
 
 interface CommunityHomeScreenProps {
   onStartStoryGame: () => void;
@@ -19,6 +20,7 @@ export const CommunityHomeScreen = ({
   userName = "Friend" 
 }: CommunityHomeScreenProps) => {
   const [glow, setGlow] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -134,6 +136,26 @@ export const CommunityHomeScreen = ({
               </div>
               <p className="text-sm text-muted-foreground">
                 Connect with others on similar journeys and access helpful resources.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Wellness Center */}
+          <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 border-community/20 hover:border-community/50 md:col-span-2">
+            <CardContent className="p-6" onClick={() => navigate('/relaxation')}>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                  <Music className="w-7 h-7 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-comfortaa font-semibold text-foreground mb-1">
+                    Wellness Center
+                  </h3>
+                  <p className="text-xs text-muted-foreground">Relaxation music & meditation</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Access calming music and meditation sounds designed to bring you peace and comfort.
               </p>
             </CardContent>
           </Card>
