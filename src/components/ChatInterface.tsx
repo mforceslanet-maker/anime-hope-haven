@@ -211,28 +211,42 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
               )}
               
               <div className={`relative max-w-[65%] ${message.sender === 'user' ? 'mr-4' : 'ml-2'}`}>
-                {/* Cloud speech bubble tail */}
+                {/* Cloud speech bubble with tail */}
                 {message.sender === 'character' && (
-                  <div 
-                    className="absolute left-0 bottom-8 w-0 h-0 -ml-3"
-                    style={{
-                      borderTop: '15px solid transparent',
-                      borderBottom: '15px solid transparent',
-                      borderRight: '15px solid hsl(var(--card))',
-                      filter: 'drop-shadow(-2px 2px 4px rgba(0,0,0,0.1))',
-                    }}
-                  />
+                  <>
+                    <div 
+                      className="absolute left-2 -bottom-4 w-6 h-6 rounded-full"
+                      style={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '2px solid',
+                        borderColor: `hsl(var(--${character.color}) / 0.3)`,
+                      }}
+                    />
+                    <div 
+                      className="absolute left-0 -bottom-2 w-4 h-4 rounded-full"
+                      style={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '2px solid',
+                        borderColor: `hsl(var(--${character.color}) / 0.3)`,
+                      }}
+                    />
+                  </>
                 )}
                 {message.sender === 'user' && (
-                  <div 
-                    className="absolute right-0 bottom-8 w-0 h-0 -mr-3"
-                    style={{
-                      borderTop: '15px solid transparent',
-                      borderBottom: '15px solid transparent',
-                      borderLeft: `15px solid hsl(var(--${character.color}))`,
-                      filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.1))',
-                    }}
-                  />
+                  <>
+                    <div 
+                      className="absolute right-2 -bottom-4 w-6 h-6 rounded-full"
+                      style={{
+                        backgroundColor: `hsl(var(--${character.color}))`,
+                      }}
+                    />
+                    <div 
+                      className="absolute right-0 -bottom-2 w-4 h-4 rounded-full"
+                      style={{
+                        backgroundColor: `hsl(var(--${character.color}))`,
+                      }}
+                    />
+                  </>
                 )}
                 
                 {/* Cloud-style message bubble */}
@@ -240,15 +254,15 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
                   className={`relative p-5 shadow-lg ${
                     message.sender === 'user' 
                       ? 'text-white' 
-                      : 'bg-card text-foreground border-2'
+                      : 'bg-card text-foreground border-[3px]'
                   }`}
                   style={{
                     ...(message.sender === 'user' ? {
                       backgroundColor: `hsl(var(--${character.color}))`,
                     } : {
-                      borderColor: `hsl(var(--${character.color}) / 0.3)`,
+                      borderColor: `hsl(var(--${character.color}) / 0.4)`,
                     }),
-                    borderRadius: '30px 30px 30px 10px',
+                    borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
                   }}
                 >
                   {message.emotion && message.sender === 'user' && (
@@ -273,23 +287,30 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
               />
               
               <div className="relative max-w-[65%] ml-2">
-                {/* Cloud speech bubble tail */}
-                <div 
-                  className="absolute left-0 bottom-8 w-0 h-0 -ml-3"
-                  style={{
-                    borderTop: '15px solid transparent',
-                    borderBottom: '15px solid transparent',
-                    borderRight: '15px solid hsl(var(--card))',
-                    filter: 'drop-shadow(-2px 2px 4px rgba(0,0,0,0.1))',
-                  }}
-                />
+                {/* Cloud speech bubble with tail */}
+                <>
+                  <div 
+                    className="absolute left-2 -bottom-4 w-6 h-6 rounded-full border-[3px]"
+                    style={{
+                      backgroundColor: 'hsl(var(--card))',
+                      borderColor: `hsl(var(--${character.color}) / 0.4)`,
+                    }}
+                  />
+                  <div 
+                    className="absolute left-0 -bottom-2 w-4 h-4 rounded-full border-[3px]"
+                    style={{
+                      backgroundColor: 'hsl(var(--card))',
+                      borderColor: `hsl(var(--${character.color}) / 0.4)`,
+                    }}
+                  />
+                </>
                 
                 {/* Typing indicator bubble */}
                 <div 
-                  className="relative p-5 bg-card shadow-lg border-2"
+                  className="relative p-5 bg-card shadow-lg border-[3px]"
                   style={{
-                    borderColor: `hsl(var(--${character.color}) / 0.3)`,
-                    borderRadius: '30px 30px 30px 10px',
+                    borderColor: `hsl(var(--${character.color}) / 0.4)`,
+                    borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
                   }}
                 >
                   <div className="flex gap-1.5">
