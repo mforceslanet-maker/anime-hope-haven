@@ -4,7 +4,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { EmotionalStateSelector } from './EmotionalStateSelector';
 import { VoiceRecorder } from './VoiceRecorder';
-import { Send, ArrowLeft, Heart, MessageCircle } from 'lucide-react';
+import { VoiceConversation } from './VoiceConversation';
+import { Send, ArrowLeft, Heart, MessageCircle, Phone } from 'lucide-react';
 import { supabase } from '../integrations/supabase/client';
 
 interface ChatInterfaceProps {
@@ -24,6 +25,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [currentMood, setCurrentMood] = useState<EmotionalState>();
   const [isTyping, setIsTyping] = useState(false);
+  const [showVoiceConversation, setShowVoiceConversation] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -137,6 +139,15 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
     setCurrentMessage(text);
   };
 
+  if (showVoiceConversation) {
+    return (
+      <VoiceConversation
+        character={character}
+        onClose={() => setShowVoiceConversation(false)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-peaceful flex flex-col">
       {/* Header */}
@@ -162,9 +173,23 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
             <p className="text-xs sm:text-sm text-muted-foreground truncate">{character.role}</p>
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-2 text-primary">
-            <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="text-xs sm:text-sm font-medium hidden sm:inline">Safe Space</span>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setShowVoiceConversation(true)}
+              variant="ghost"
+              size="sm"
+              className="gap-2"
+              style={{
+                color: `hsl(var(--${character.color}))`,
+              }}
+            >
+              <Phone className="w-4 h-4" />
+              <span className="text-xs sm:text-sm font-medium hidden sm:inline">Voice Call</span>
+            </Button>
+            <div className="flex items-center gap-1 sm:gap-2 text-primary">
+              <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="text-xs sm:text-sm font-medium hidden sm:inline">Safe Space</span>
+            </div>
           </div>
         </div>
       </div>
