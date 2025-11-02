@@ -106,6 +106,42 @@ export default function AdminMusicManager() {
     }
   };
 
+  const cleanVideoIds = async () => {
+    try {
+      // Get all tracks
+      const { data: tracksData } = await supabase
+        .from('relaxation_music')
+        .select('id, youtube_video_id');
+
+      if (!tracksData) return;
+
+      // Clean each video ID
+      for (const track of tracksData) {
+        const cleanId = track.youtube_video_id.split('?')[0].split('&')[0].split('#')[0];
+        
+        if (cleanId !== track.youtube_video_id) {
+          await supabase
+            .from('relaxation_music')
+            .update({ youtube_video_id: cleanId })
+            .eq('id', track.id);
+        }
+      }
+
+      toast({
+        title: 'Success',
+        description: 'All video IDs cleaned successfully',
+      });
+
+      await loadData();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const extractVideoId = (url: string): string => {
     const patterns = [
       /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s?]+)/,
@@ -239,20 +275,24 @@ export default function AdminMusicManager() {
                 </div>
               </div>
 
-              <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Track
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Track</DialogTitle>
-                    <DialogDescription>
-                      Add a YouTube link for relaxation music
-                    </DialogDescription>
-                  </DialogHeader>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={cleanVideoIds}>
+                  Clean Video IDs
+                </Button>
+                <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+                  <DialogTrigger asChild>
+                    <Button>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Track
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Track</DialogTitle>
+                      <DialogDescription>
+                        Add a YouTube link for relaxation music
+                      </DialogDescription>
+                    </DialogHeader>
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="title">Track Title *</Label>
@@ -303,8 +343,9 @@ export default function AdminMusicManager() {
                       Add Track
                     </Button>
                   </div>
-                </DialogContent>
-              </Dialog>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
           </CardHeader>
         </Card>
