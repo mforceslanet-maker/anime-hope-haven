@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { BookHeart, Heart, MessageCircle, GraduationCap, Users, Settings, Sparkles, ArrowLeft } from 'lucide-react';
+import { BookHeart, Heart, MessageCircle, GraduationCap, Users, Settings, Sparkles, ArrowLeft, Music } from 'lucide-react';
 
 interface TeacherHomeScreenProps {
   onStartStoryGame: () => void;
@@ -22,6 +23,7 @@ export const TeacherHomeScreen = ({
   userName = "Educator" 
 }: TeacherHomeScreenProps) => {
   const [sparkle, setSparkle] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -148,6 +150,26 @@ export const TeacherHomeScreen = ({
               </div>
               <p className="text-sm text-muted-foreground">
                 Access resources and connect with fellow educators who understand your journey.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Wellness Center */}
+          <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 border-teacher/20 hover:border-teacher/50 md:col-span-2">
+            <CardContent className="p-6" onClick={() => navigate('/relaxation')}>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                  <Music className="w-7 h-7 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-comfortaa font-semibold text-foreground mb-1">
+                    Wellness Center
+                  </h3>
+                  <p className="text-xs text-muted-foreground">Relaxation music & meditation</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Access curated relaxation music designed specifically for educators. Find your moment of peace.
               </p>
             </CardContent>
           </Card>
