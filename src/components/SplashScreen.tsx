@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
-import { Heart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Heart, Music2 } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface SplashScreenProps {
   onComplete: () => void;
 }
 
 export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       onComplete();
@@ -24,9 +28,19 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
           </h1>
           <Heart className="w-8 h-8 sm:w-12 sm:h-12 text-sky-500 animate-pulse" />
         </div>
-        <p className="text-lg sm:text-xl text-muted-foreground animate-fade-in delay-500">
+        <p className="text-lg sm:text-xl text-muted-foreground animate-fade-in delay-500 mb-8">
           Welcome to My Story
         </p>
+        
+        <Button
+          onClick={() => navigate('/relaxation')}
+          variant="outline"
+          size="lg"
+          className="animate-fade-in delay-1000 gap-2"
+        >
+          <Music2 className="w-5 h-5" />
+          Enter Relaxation Center
+        </Button>
       </div>
     </div>
   );

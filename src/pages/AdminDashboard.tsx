@@ -14,7 +14,8 @@ import {
   MessageSquare, 
   Clock,
   RefreshCw,
-  Settings
+  Settings,
+  Music
 } from 'lucide-react';
 
 interface Room {
@@ -261,10 +262,16 @@ export default function AdminDashboard() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Recent Messages</CardTitle>
-                  <Button onClick={loadData} size="sm" variant="outline">
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Refresh
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button onClick={() => navigate('/admin/music')} size="sm" variant="outline">
+                      <Music className="w-4 h-4 mr-2" />
+                      Manage Music
+                    </Button>
+                    <Button onClick={loadData} size="sm" variant="outline">
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Refresh
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
