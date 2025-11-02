@@ -235,14 +235,8 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
     });
 
     // Speak the character's greeting first
+    // After speaking ends, the recognition.onend handler will automatically start listening
     await speakText(character.greeting);
-
-    // Then start listening for user's response
-    try {
-      recognitionRef.current.start();
-    } catch (error) {
-      console.error('Error starting recognition:', error);
-    }
   };
 
   const stopConversation = () => {
