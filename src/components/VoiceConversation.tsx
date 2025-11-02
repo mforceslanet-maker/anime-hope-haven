@@ -22,7 +22,6 @@ declare global {
 export const VoiceConversation = ({ character, onClose }: VoiceConversationProps) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [processingResponse, setProcessingResponse] = useState(false);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>('');
   const [conversationActive, setConversationActive] = useState(false);
@@ -88,11 +87,9 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       // Stop listening while processing
       recognition.stop();
       setIsListening(false);
-      setProcessingResponse(true);
       
       // Get AI response
       await getAIResponse(transcript);
-      setProcessingResponse(false);
     };
 
     recognition.onerror = (event: any) => {
@@ -120,7 +117,16 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
     recognition.onend = () => {
       setIsListening(false);
-      console.log('Recognition ended, isSpeaking:', isSpeaking, 'conversationActive:', conversationActive);
+      // Restart listening if conversation is still active and not speaking
+      if (conversationActive && !isSpeaking) {
+        setTimeout(() => {
+          try {
+            recognition.start();
+          } catch (e) {
+            console.error('Failed to restart recognition:', e);
+          }
+        }, 500);
+      }
     };
 
     recognitionRef.current = recognition;
@@ -134,7 +140,6 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
   const getAIResponse = async (userMessage: string) => {
     try {
-      console.log('Getting AI response for:', userMessage);
       const { data, error } = await supabase.functions.invoke('chat-with-perplexity', {
         body: {
           message: userMessage,
@@ -146,23 +151,9 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       if (error) throw error;
 
       const responseText = data.response || "I'm here to listen.";
-      console.log('Got AI response, now speaking:', responseText);
       
-      // Speak the response and wait for it to finish
+      // Speak the response
       await speakText(responseText);
-      
-      console.log('Finished speaking, restarting listening');
-      // Restart listening after speaking is done
-      if (conversationActive && recognitionRef.current) {
-        setTimeout(() => {
-          try {
-            recognitionRef.current.start();
-            console.log('Restarted listening');
-          } catch (e) {
-            console.error('Failed to restart after speaking:', e);
-          }
-        }, 500);
-      }
       
     } catch (error) {
       console.error('Error getting AI response:', error);
@@ -299,14 +290,12 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
           className={`w-64 h-64 rounded-full transition-all duration-300 ${
             isSpeaking 
               ? 'bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 animate-pulse scale-110' 
-              : processingResponse
-              ? 'bg-gradient-to-br from-purple-300 via-purple-400 to-purple-500 animate-pulse scale-105'
               : isListening 
               ? 'bg-gradient-to-br from-blue-300 via-blue-400 to-blue-500 animate-pulse' 
               : 'bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400'
           }`}
           style={{
-            boxShadow: isSpeaking || isListening || processingResponse
+            boxShadow: isSpeaking || isListening 
               ? '0 0 60px rgba(59, 130, 246, 0.6)' 
               : '0 0 30px rgba(59, 130, 246, 0.3)',
           }}
@@ -326,12 +315,10 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       <p className="text-center text-lg font-medium mb-8">
         {isSpeaking 
           ? `${character.name} is speaking...` 
-          : processingResponse
-          ? "Getting response..."
           : isListening 
           ? "Listening... speak now" 
           : conversationActive
-          ? "Waiting..."
+          ? "Processing..."
           : "Ready to start"}
       </p>
 
