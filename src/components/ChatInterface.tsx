@@ -3,6 +3,7 @@ import { Character, ChatMessage, EmotionalState } from '../types/character';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { EmotionalStateSelector } from './EmotionalStateSelector';
+import { VoiceRecorder } from './VoiceRecorder';
 import { Send, ArrowLeft, Heart, MessageCircle } from 'lucide-react';
 import { supabase } from '../integrations/supabase/client';
 
@@ -132,6 +133,10 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
     }
   };
 
+  const handleVoiceTranscription = (text: string) => {
+    setCurrentMessage(text);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-peaceful flex flex-col">
       {/* Header */}
@@ -221,6 +226,10 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
           />
           
           <div className="flex gap-2 sm:gap-3">
+            <VoiceRecorder
+              onTranscriptionComplete={handleVoiceTranscription}
+              disabled={isTyping}
+            />
             <Input
               placeholder={`Share what's on your mind with ${character.name}...`}
               value={currentMessage}
