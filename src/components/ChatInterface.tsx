@@ -251,7 +251,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
                 
                 {/* Cloud-style message bubble */}
                 <div 
-                  className={`relative p-5 shadow-lg ${
+                  className={`relative px-6 py-5 shadow-lg ${
                     message.sender === 'user' 
                       ? 'text-white' 
                       : 'bg-card text-foreground border-[3px]'
@@ -262,7 +262,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
                     } : {
                       borderColor: `hsl(var(--${character.color}) / 0.4)`,
                     }),
-                    borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+                    borderRadius: '25px 25px 25px 25px',
                   }}
                 >
                   {message.emotion && message.sender === 'user' && (
@@ -270,7 +270,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
                       Feeling {message.emotion}
                     </div>
                   )}
-                  <p className="text-sm sm:text-base leading-relaxed break-words">
+                  <p className="text-sm sm:text-base leading-relaxed break-words overflow-wrap-anywhere">
                     {message.content}
                   </p>
                 </div>
@@ -307,10 +307,10 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
                 
                 {/* Typing indicator bubble */}
                 <div 
-                  className="relative p-5 bg-card shadow-lg border-[3px]"
+                  className="relative px-6 py-5 bg-card shadow-lg border-[3px]"
                   style={{
                     borderColor: `hsl(var(--${character.color}) / 0.4)`,
-                    borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+                    borderRadius: '25px 25px 25px 25px',
                   }}
                 >
                   <div className="flex gap-1.5">
