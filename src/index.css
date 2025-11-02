@@ -200,6 +200,11 @@
     color: hsl(var(--anxious) / 0.8);
   }
 
+  .emotion-excited {
+    background: hsl(var(--excited) / 0.2);
+    color: hsl(var(--excited) / 0.8);
+  }
+
   /* Breathing exercise animations */
   .breathing-circle {
     @apply w-32 h-32 rounded-full border-4 border-primary/30;
