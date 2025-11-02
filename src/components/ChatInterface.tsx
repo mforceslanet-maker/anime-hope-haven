@@ -253,7 +253,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
                 <div 
                   className={`relative px-6 py-5 shadow-lg ${
                     message.sender === 'user' 
-                      ? 'text-white' 
+                      ? 'text-foreground' 
                       : 'bg-card text-foreground border-[3px]'
                   }`}
                   style={{
