@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Shield, HeartPulse, GraduationCap, Users, Briefcase, Sparkles } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Shield, HeartPulse, GraduationCap, Users, Briefcase, Sparkles, ArrowLeft } from 'lucide-react';
 
 interface Category {
   id: string;
@@ -33,13 +34,17 @@ const colorMap: Record<string, string> = {
 export default function RelaxationHub() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userProfession, setUserProfession] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadCategories();
+    // Get user profession from localStorage
+    const profession = localStorage.getItem('userProfession');
+    setUserProfession(profession);
+    loadCategories(profession);
   }, []);
 
-  const loadCategories = async () => {
+  const loadCategories = async (profession: string | null) => {
     try {
       const { data, error } = await supabase
         .from('relaxation_categories')
@@ -47,7 +52,28 @@ export default function RelaxationHub() {
         .order('name');
 
       if (error) throw error;
-      setCategories(data || []);
+      
+      // Filter categories based on user profession
+      let filteredCategories = data || [];
+      
+      if (profession) {
+        const categoryMap: Record<string, string[]> = {
+          'Teacher': ['teachers'],
+          'Military Personnel': ['military-personnel'],
+          'Subordinate Staff': ['staff-workers'],
+          'Healthcare Worker': ['healthcare-workers'],
+          'Military Student': ['community-members'], // Students see community
+        };
+        
+        const allowedSlugs = categoryMap[profession];
+        if (allowedSlugs) {
+          filteredCategories = filteredCategories.filter(cat => 
+            allowedSlugs.includes(cat.slug)
+          );
+        }
+      }
+      
+      setCategories(filteredCategories);
     } catch (error) {
       console.error('Error loading categories:', error);
     } finally {
@@ -66,6 +92,15 @@ export default function RelaxationHub() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/')}
+                className="mr-2"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
               <Shield className="w-8 h-8 text-primary animate-pulse" />
               <h1 className="text-3xl font-comfortaa font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 Wellness Center

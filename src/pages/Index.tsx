@@ -37,6 +37,10 @@ const Index = () => {
   const handleAgeSubmit = (age: number, profession?: string, idNumber?: string) => {
     setUserAge(age);
     setUserProfession(profession || null);
+    // Store profession in localStorage for RelaxationHub
+    if (profession) {
+      localStorage.setItem('userProfession', profession);
+    }
     setCurrentView('personalized-motivation');
   };
   const handlePersonalizedMotivationContinue = () => {
