@@ -1,18 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { AudioVisualizer } from '../components/AudioVisualizer';
-import { ArrowLeft, Play, Pause, SkipForward, SkipBack, Volume2 } from 'lucide-react';
+import { ArrowLeft, Play, Pause, Volume2, Music } from 'lucide-react';
 import { Slider } from '../components/ui/slider';
 import { useToast } from '../hooks/use-toast';
+import { Badge } from '../components/ui/badge';
 
 interface Track {
   id: string;
   title: string;
   youtube_video_id: string;
   description: string;
+  duration: string;
 }
 
 interface Category {
@@ -26,7 +28,7 @@ export default function RelaxationPlayer() {
   const { toast } = useToast();
   const [category, setCategory] = useState<Category | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState([80]);
   const [loading, setLoading] = useState(true);
@@ -97,7 +99,7 @@ export default function RelaxationPlayer() {
 
       const { data: tracksData, error: tracksError } = await supabase
         .from('relaxation_music')
-        .select('id, title, youtube_video_id, description')
+        .select('id, title, youtube_video_id, description, duration')
         .eq('category_id', categoryId.id)
         .eq('is_active', true)
         .order('created_at');
@@ -111,6 +113,9 @@ export default function RelaxationPlayer() {
       }));
       
       setTracks(cleanedTracks);
+      if (cleanedTracks.length > 0) {
+        setCurrentTrackId(cleanedTracks[0].id);
+      }
     } catch (error: any) {
       console.error('Error loading data:', error);
       toast({
@@ -124,12 +129,15 @@ export default function RelaxationPlayer() {
   };
 
   useEffect(() => {
-    if (playerReady && tracks.length > 0 && !playerRef.current) {
+    if (playerReady && currentTrackId && !playerRef.current) {
       initializePlayer();
     }
-  }, [playerReady, tracks, currentTrackIndex]);
+  }, [playerReady, currentTrackId]);
 
   const initializePlayer = () => {
+    const currentTrack = tracks.find(t => t.id === currentTrackId);
+    if (!currentTrack) return;
+
     if (playerRef.current) {
       playerRef.current.destroy();
     }
@@ -137,7 +145,7 @@ export default function RelaxationPlayer() {
     playerRef.current = new (window as any).YT.Player('youtube-player', {
       height: '0',
       width: '0',
-      videoId: tracks[currentTrackIndex]?.youtube_video_id,
+      videoId: currentTrack.youtube_video_id,
       playerVars: {
         autoplay: 0,
         controls: 0,
@@ -151,39 +159,35 @@ export default function RelaxationPlayer() {
         },
         onStateChange: (event: any) => {
           if (event.data === (window as any).YT.PlayerState.ENDED) {
-            handleNext();
+            setIsPlaying(false);
           }
         },
       },
     });
   };
 
-  const togglePlay = () => {
-    if (!playerRef.current) return;
-
-    if (isPlaying) {
-      playerRef.current.pauseVideo();
+  const handleTrackSelect = (trackId: string) => {
+    if (currentTrackId === trackId && playerRef.current) {
+      // Toggle play/pause for current track
+      if (isPlaying) {
+        playerRef.current.pauseVideo();
+        setIsPlaying(false);
+      } else {
+        playerRef.current.playVideo();
+        setIsPlaying(true);
+      }
     } else {
-      playerRef.current.playVideo();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleNext = () => {
-    const nextIndex = (currentTrackIndex + 1) % tracks.length;
-    setCurrentTrackIndex(nextIndex);
-    setIsPlaying(false);
-    if (playerRef.current) {
-      playerRef.current.loadVideoById(tracks[nextIndex].youtube_video_id);
-    }
-  };
-
-  const handlePrevious = () => {
-    const prevIndex = currentTrackIndex === 0 ? tracks.length - 1 : currentTrackIndex - 1;
-    setCurrentTrackIndex(prevIndex);
-    setIsPlaying(false);
-    if (playerRef.current) {
-      playerRef.current.loadVideoById(tracks[prevIndex].youtube_video_id);
+      // Switch to new track
+      setCurrentTrackId(trackId);
+      setIsPlaying(false);
+      const track = tracks.find(t => t.id === trackId);
+      if (track && playerRef.current) {
+        playerRef.current.loadVideoById(track.youtube_video_id);
+        setTimeout(() => {
+          playerRef.current.playVideo();
+          setIsPlaying(true);
+        }, 500);
+      }
     }
   };
 
@@ -205,14 +209,14 @@ export default function RelaxationPlayer() {
     );
   }
 
-  const currentTrack = tracks[currentTrackIndex];
+  const currentTrack = tracks.find(t => t.id === currentTrackId);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
       {/* Hidden YouTube player */}
       <div id="youtube-player" className="hidden" />
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <Button
           variant="ghost"
           onClick={() => navigate('/relaxation')}
@@ -222,89 +226,117 @@ export default function RelaxationPlayer() {
           Back to Categories
         </Button>
 
-        {/* Player Card */}
-        <Card className="overflow-hidden border-2 border-primary/20 shadow-2xl animate-fade-in">
-          <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5 border-b border-primary/20">
-            <CardTitle className="text-2xl font-comfortaa text-center">
-              {category?.name} - Relaxation Center
-            </CardTitle>
-          </CardHeader>
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-comfortaa font-bold mb-2">
+            {category?.name} Relaxation Music
+          </h1>
+          <p className="text-muted-foreground">
+            Select a track to begin your relaxation journey
+          </p>
+        </div>
 
-          <CardContent className="p-8">
-            {tracks.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">No relaxation tracks available yet.</p>
-                <p className="text-sm text-muted-foreground mt-2">Check back soon!</p>
-              </div>
-            ) : (
-              <>
-                {/* Visualizer */}
-                <div className="relative w-full h-64 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 mb-8 overflow-hidden shadow-inner">
-                  <AudioVisualizer isPlaying={isPlaying} />
-                </div>
-
-                {/* Track Info */}
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-comfortaa font-bold mb-2">{currentTrack?.title}</h3>
-                  {currentTrack?.description && (
-                    <p className="text-muted-foreground">{currentTrack.description}</p>
-                  )}
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Track {currentTrackIndex + 1} of {tracks.length}
-                  </p>
-                </div>
-
-                {/* Controls */}
-                <div className="flex items-center justify-center gap-4 mb-6">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    onClick={handlePrevious}
-                    className="rounded-full w-14 h-14"
-                  >
-                    <SkipBack className="w-5 h-5" />
-                  </Button>
-
-                  <Button
-                    size="lg"
-                    onClick={togglePlay}
-                    className="rounded-full w-20 h-20 shadow-xl hover:scale-105 transition-transform"
-                  >
-                    {isPlaying ? (
-                      <Pause className="w-8 h-8" />
-                    ) : (
-                      <Play className="w-8 h-8 ml-1" />
-                    )}
-                  </Button>
-
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    onClick={handleNext}
-                    className="rounded-full w-14 h-14"
-                  >
-                    <SkipForward className="w-5 h-5" />
-                  </Button>
-                </div>
-
-                {/* Volume Control */}
-                <div className="flex items-center gap-4 max-w-xs mx-auto">
-                  <Volume2 className="w-5 h-5 text-muted-foreground" />
-                  <Slider
-                    value={volume}
-                    onValueChange={handleVolumeChange}
-                    max={100}
-                    step={1}
-                    className="flex-1"
-                  />
-                  <span className="text-sm text-muted-foreground w-12 text-right">
-                    {volume[0]}%
-                  </span>
-                </div>
-              </>
+        {tracks.length === 0 ? (
+          <Card className="p-12">
+            <div className="text-center">
+              <Music className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <p className="text-xl text-muted-foreground mb-2">No relaxation tracks available yet.</p>
+              <p className="text-sm text-muted-foreground">Check back soon!</p>
+            </div>
+          </Card>
+        ) : (
+          <>
+            {/* Current Playing Track Visualizer */}
+            {currentTrack && (
+              <Card className="mb-8 overflow-hidden border-2 border-primary/20 shadow-xl">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-6">
+                    <div className="flex-1">
+                      <div className="relative w-full h-32 rounded-xl bg-gradient-to-br from-primary/10 to-primary/20 overflow-hidden">
+                        <AudioVisualizer isPlaying={isPlaying} />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-comfortaa font-bold mb-2">Now Playing</h3>
+                      <p className="text-lg mb-4">{currentTrack.title}</p>
+                      <div className="flex items-center gap-4">
+                        <Button
+                          size="lg"
+                          onClick={() => handleTrackSelect(currentTrack.id)}
+                          className="rounded-full"
+                        >
+                          {isPlaying ? <Pause className="w-5 h-5 mr-2" /> : <Play className="w-5 h-5 mr-2" />}
+                          {isPlaying ? 'Pause' : 'Play'}
+                        </Button>
+                        <div className="flex items-center gap-2 flex-1">
+                          <Volume2 className="w-4 h-4 text-muted-foreground" />
+                          <Slider
+                            value={volume}
+                            onValueChange={handleVolumeChange}
+                            max={100}
+                            step={1}
+                            className="flex-1 max-w-[200px]"
+                          />
+                          <span className="text-sm text-muted-foreground w-12">{volume[0]}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             )}
-          </CardContent>
-        </Card>
+
+            {/* Track Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {tracks.map((track, index) => (
+                <Card
+                  key={track.id}
+                  className={`group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-2 ${
+                    currentTrackId === track.id ? 'border-primary shadow-lg shadow-primary/20' : 'border-border'
+                  }`}
+                  onClick={() => handleTrackSelect(track.id)}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className={`p-3 rounded-xl transition-all ${
+                        currentTrackId === track.id 
+                          ? 'bg-primary text-primary-foreground scale-110' 
+                          : 'bg-muted group-hover:bg-primary/10'
+                      }`}>
+                        {currentTrackId === track.id && isPlaying ? (
+                          <Pause className="w-6 h-6" />
+                        ) : (
+                          <Play className="w-6 h-6" />
+                        )}
+                      </div>
+                      {currentTrackId === track.id && (
+                        <Badge variant="default" className="animate-pulse">
+                          {isPlaying ? 'Playing' : 'Selected'}
+                        </Badge>
+                      )}
+                    </div>
+                    <CardTitle className="text-lg font-comfortaa group-hover:text-primary transition-colors">
+                      {track.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {track.description && (
+                      <CardDescription className="text-sm leading-relaxed mb-2">
+                        {track.description}
+                      </CardDescription>
+                    )}
+                    {track.duration && (
+                      <p className="text-xs text-muted-foreground">
+                        Duration: {track.duration}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
