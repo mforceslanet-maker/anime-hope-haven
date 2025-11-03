@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Mic, MessageCircle, Shield, Heart } from 'lucide-react';
+import { MessageCircle, Shield, Heart } from 'lucide-react';
 import { Character } from '../types/character';
 
 interface MilitaryTherapistCardProps {
@@ -66,19 +66,6 @@ export const MilitaryTherapistCard = ({ therapist, onSelect }: MilitaryTherapist
           >
             <MessageCircle className="w-4 h-4" />
             Start Chat Session
-          </Button>
-          
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              // TODO: Implement audio session
-              console.log('Audio session not implemented yet');
-            }}
-            variant="outline"
-            className="w-full border-military/30 text-military hover:bg-military/5 font-medium py-3 rounded-xl transition-all duration-200 flex items-center gap-2"
-          >
-            <Mic className="w-4 h-4" />
-            Audio Session (Coming Soon)
           </Button>
         </div>
 

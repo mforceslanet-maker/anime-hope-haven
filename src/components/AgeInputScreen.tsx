@@ -9,7 +9,7 @@ interface AgeInputScreenProps {
 }
 
 const PROFESSIONS = [
-  { value: 'Military Student', label: 'Military Students', idLabel: 'Admission Number', idPlaceholder: 'Enter your admission number' },
+  { value: 'Students', label: 'Students', idLabel: 'Admission Number', idPlaceholder: 'Enter your admission number' },
   { value: 'Military Personnel', label: 'Military Personnel', idLabel: 'Service Number', idPlaceholder: 'Enter your service number' },
   { value: 'Support Staff', label: 'Support Staff', idLabel: 'Employee Number', idPlaceholder: 'Enter your employee number' },
   { value: 'Teacher', label: 'Teachers', idLabel: 'TSC Number', idPlaceholder: 'Enter your TSC number' }

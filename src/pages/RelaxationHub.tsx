@@ -62,7 +62,7 @@ export default function RelaxationHub() {
           'Military Personnel': ['military-personnel'],
           'Support Staff': ['staff'],
           'Healthcare Worker': ['healthcare-workers'],
-          'Military Student': ['community-members'], // Students see community
+          'Students': ['community-members'], // Students see community
         };
         
         const allowedSlugs = categoryMap[profession];

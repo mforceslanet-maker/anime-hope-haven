@@ -10,7 +10,7 @@ interface PersonalizedMotivationalScreenProps {
 }
 
 const motivationalMessages: Record<string, string[]> = {
-  'Military Student': [
+  'Students': [
     "Your dedication to serve is admirable. Remember, even the strongest warriors need rest.",
     "Every step in your training is a step towards greatness. Be proud of how far you've come.",
     "Your commitment to excellence inspires others. Take a moment to appreciate your journey."

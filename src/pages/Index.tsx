@@ -46,7 +46,7 @@ const Index = () => {
   const handlePersonalizedMotivationContinue = () => {
     // Route to appropriate landing page based on profession
     switch (userProfession) {
-      case 'Military Student':
+      case 'Students':
         setCurrentView('character-selection'); // Students see the 4 student characters
         break;
       case 'Military Personnel':
@@ -107,7 +107,7 @@ const Index = () => {
         HomeComponent = StaffHomeScreen;
         break;
       default:
-        HomeComponent = HomeScreen; // Military Students get the original HomeScreen
+        HomeComponent = HomeScreen; // Students get the original HomeScreen
     }
 
     return (
