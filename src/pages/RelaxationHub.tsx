@@ -60,7 +60,7 @@ export default function RelaxationHub() {
         const categoryMap: Record<string, string[]> = {
           'Teacher': ['teachers'],
           'Military Personnel': ['military-personnel'],
-          'Subordinate Staff': ['staff-workers'],
+          'Support Staff': ['staff-workers'],
           'Healthcare Worker': ['healthcare-workers'],
           'Military Student': ['community-members'], // Students see community
         };

@@ -55,7 +55,7 @@ const Index = () => {
       case 'Teacher':
         setCurrentView('teacher-landing');
         break;
-      case 'Subordinate Staff':
+      case 'Support Staff':
         setCurrentView('staff-landing');
         break;
       default:
@@ -103,7 +103,7 @@ const Index = () => {
       case 'Teacher':
         HomeComponent = TeacherHomeScreen;
         break;
-      case 'Subordinate Staff':
+      case 'Support Staff':
         HomeComponent = StaffHomeScreen;
         break;
       default:
@@ -127,7 +127,7 @@ const Index = () => {
               case 'Teacher':
                 setCurrentView('teacher-landing');
                 break;
-              case 'Subordinate Staff':
+              case 'Support Staff':
                 setCurrentView('staff-landing');
                 break;
               default:
