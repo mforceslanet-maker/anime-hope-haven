@@ -12,28 +12,35 @@ import AdminDashboard from "./pages/AdminDashboard";
 import RelaxationHub from "./pages/RelaxationHub";
 import RelaxationPlayer from "./pages/RelaxationPlayer";
 import AdminMusicManager from "./pages/AdminMusicManager";
+import { MusicPlayerProvider } from "./contexts/MusicPlayerContext";
+import { MiniMusicPlayer } from "./components/MiniMusicPlayer";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/relaxation" element={<RelaxationHub />} />
-          <Route path="/relaxation/:slug" element={<RelaxationPlayer />} />
-          <Route path="/support" element={<SupportDashboard />} />
-          <Route path="/admin/auth" element={<AdminAuth />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/music" element={<AdminMusicManager />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <MusicPlayerProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/relaxation" element={<RelaxationHub />} />
+            <Route path="/relaxation/:slug" element={<RelaxationPlayer />} />
+            <Route path="/support" element={<SupportDashboard />} />
+            <Route path="/admin/auth" element={<AdminAuth />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/music" element={<AdminMusicManager />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <MiniMusicPlayer />
+          {/* Hidden YouTube player */}
+          <div id="youtube-player" className="hidden" />
+        </BrowserRouter>
+      </TooltipProvider>
+    </MusicPlayerProvider>
   </QueryClientProvider>
 );
 

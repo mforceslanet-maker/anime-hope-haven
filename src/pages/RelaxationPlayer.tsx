@@ -1,13 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { AudioVisualizer } from '../components/AudioVisualizer';
-import { ArrowLeft, Play, Pause, Volume2, Music } from 'lucide-react';
+import { ArrowLeft, Play, Pause, Volume2, Music, Minimize2 } from 'lucide-react';
 import { Slider } from '../components/ui/slider';
 import { useToast } from '../hooks/use-toast';
 import { Badge } from '../components/ui/badge';
+import { useMusicPlayer } from '../contexts/MusicPlayerContext';
 
 interface Track {
   id: string;
@@ -26,14 +27,26 @@ export default function RelaxationPlayer() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [category, setCategory] = useState<Category | null>(null);
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState([80]);
   const [loading, setLoading] = useState(true);
-  const playerRef = useRef<any>(null);
   const [playerReady, setPlayerReady] = useState(false);
+  
+  const {
+    currentTrack,
+    tracks,
+    category,
+    isPlaying,
+    volume,
+    isMinimized,
+    playerRef,
+    setCurrentTrack,
+    setTracks,
+    setCategory,
+    setIsPlaying,
+    setVolume,
+    toggleMinimize,
+    playTrack,
+    togglePlayPause,
+  } = useMusicPlayer();
 
   useEffect(() => {
     loadCategoryAndTracks();
@@ -82,7 +95,8 @@ export default function RelaxationPlayer() {
         return;
       }
       
-      setCategory(categoryData);
+      // Set category with slug early
+      setCategory({ ...categoryData, slug: slug || '' });
 
       // Load tracks
       const { data: categoryId } = await supabase
@@ -113,8 +127,8 @@ export default function RelaxationPlayer() {
       }));
       
       setTracks(cleanedTracks);
-      if (cleanedTracks.length > 0) {
-        setCurrentTrackId(cleanedTracks[0].id);
+      if (cleanedTracks.length > 0 && !currentTrack) {
+        setCurrentTrack(cleanedTracks[0]);
       }
     } catch (error: any) {
       console.error('Error loading data:', error);
@@ -129,13 +143,12 @@ export default function RelaxationPlayer() {
   };
 
   useEffect(() => {
-    if (playerReady && currentTrackId && !playerRef.current) {
+    if (playerReady && currentTrack && !playerRef.current) {
       initializePlayer();
     }
-  }, [playerReady, currentTrackId]);
+  }, [playerReady, currentTrack]);
 
   const initializePlayer = () => {
-    const currentTrack = tracks.find(t => t.id === currentTrackId);
     if (!currentTrack) return;
 
     if (playerRef.current) {
@@ -167,35 +180,15 @@ export default function RelaxationPlayer() {
   };
 
   const handleTrackSelect = (trackId: string) => {
-    if (currentTrackId === trackId && playerRef.current) {
-      // Toggle play/pause for current track
-      if (isPlaying) {
-        playerRef.current.pauseVideo();
-        setIsPlaying(false);
-      } else {
-        playerRef.current.playVideo();
-        setIsPlaying(true);
-      }
+    if (currentTrack?.id === trackId) {
+      togglePlayPause();
     } else {
-      // Switch to new track
-      setCurrentTrackId(trackId);
-      setIsPlaying(false);
-      const track = tracks.find(t => t.id === trackId);
-      if (track && playerRef.current) {
-        playerRef.current.loadVideoById(track.youtube_video_id);
-        setTimeout(() => {
-          playerRef.current.playVideo();
-          setIsPlaying(true);
-        }, 500);
-      }
+      playTrack(trackId);
     }
   };
 
   const handleVolumeChange = (newVolume: number[]) => {
     setVolume(newVolume);
-    if (playerRef.current) {
-      playerRef.current.setVolume(newVolume[0]);
-    }
   };
 
   if (loading) {
@@ -209,22 +202,30 @@ export default function RelaxationPlayer() {
     );
   }
 
-  const currentTrack = tracks.find(t => t.id === currentTrackId);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
       {/* Hidden YouTube player */}
       <div id="youtube-player" className="hidden" />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/relaxation')}
-          className="mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Categories
-        </Button>
+      <div className="max-w-7xl mx-auto px-4 py-8 pb-24">
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/relaxation')}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Categories
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={toggleMinimize}
+            className="gap-2"
+          >
+            <Minimize2 className="w-4 h-4" />
+            Minimize Player
+          </Button>
+        </div>
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -292,25 +293,25 @@ export default function RelaxationPlayer() {
                 <Card
                   key={track.id}
                   className={`group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-2 ${
-                    currentTrackId === track.id ? 'border-primary shadow-lg shadow-primary/20' : 'border-border'
+                    currentTrack?.id === track.id ? 'border-primary shadow-lg shadow-primary/20' : 'border-border'
                   }`}
                   onClick={() => handleTrackSelect(track.id)}
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between mb-2">
-                      <div className={`p-3 rounded-xl transition-all ${
-                        currentTrackId === track.id 
+                    <div className={`p-3 rounded-xl transition-all ${
+                        currentTrack?.id === track.id 
                           ? 'bg-primary text-primary-foreground scale-110' 
                           : 'bg-muted group-hover:bg-primary/10'
                       }`}>
-                        {currentTrackId === track.id && isPlaying ? (
+                      {currentTrack?.id === track.id && isPlaying ? (
                           <Pause className="w-6 h-6" />
                         ) : (
                           <Play className="w-6 h-6" />
                         )}
                       </div>
-                      {currentTrackId === track.id && (
+                      {currentTrack?.id === track.id && (
                         <Badge variant="default" className="animate-pulse">
                           {isPlaying ? 'Playing' : 'Selected'}
                         </Badge>
