@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface AudioVisualizerProps {
   isPlaying: boolean;
@@ -8,8 +8,26 @@ interface AudioVisualizerProps {
 export const AudioVisualizer = ({ isPlaying, color = 'hsl(var(--primary))' }: AudioVisualizerProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
+  const [computedColor, setComputedColor] = useState<string>('');
+
+  // Resolve CSS variable to actual color
+  useEffect(() => {
+    if (color.includes('var(')) {
+      // Get computed color from CSS variable
+      const tempDiv = document.createElement('div');
+      tempDiv.style.color = color;
+      document.body.appendChild(tempDiv);
+      const computed = window.getComputedStyle(tempDiv).color;
+      document.body.removeChild(tempDiv);
+      setComputedColor(computed);
+    } else {
+      setComputedColor(color);
+    }
+  }, [color]);
 
   useEffect(() => {
+    if (!computedColor) return;
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -33,10 +51,18 @@ export const AudioVisualizer = ({ isPlaying, color = 'hsl(var(--primary))' }: Au
         const x = i * barWidth;
         const y = canvas.height / 2 - barHeight / 2;
 
-        // Create gradient for bars
+        // Create gradient for bars using computed color
         const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
-        gradient.addColorStop(0, color);
-        gradient.addColorStop(1, color.replace(')', ', 0.3)').replace('hsl', 'hsla'));
+        gradient.addColorStop(0, computedColor);
+        
+        // Create semi-transparent version for bottom
+        const rgbaMatch = computedColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+        if (rgbaMatch) {
+          const [, r, g, b] = rgbaMatch;
+          gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.3)`);
+        } else {
+          gradient.addColorStop(1, computedColor);
+        }
 
         ctx.fillStyle = gradient;
         ctx.fillRect(x, y, barWidth - 2, barHeight);
@@ -56,7 +82,7 @@ export const AudioVisualizer = ({ isPlaying, color = 'hsl(var(--primary))' }: Au
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isPlaying, color]);
+  }, [isPlaying, computedColor]);
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
