@@ -5,8 +5,10 @@ import { Input } from './ui/input';
 import { EmotionalStateSelector } from './EmotionalStateSelector';
 import { VoiceRecorder } from './VoiceRecorder';
 import { VoiceConversation } from './VoiceConversation';
-import { Send, ArrowLeft, Heart, MessageCircle, Phone } from 'lucide-react';
+import { ApiKeySettings } from './ApiKeySettings';
+import { Send, ArrowLeft, Heart, Phone, Settings, MessageCircle } from 'lucide-react';
 import { supabase } from '../integrations/supabase/client';
+import { useToast } from './ui/use-toast';
 
 interface ChatInterfaceProps {
   character: Character;
@@ -26,9 +28,11 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
   const [currentMood, setCurrentMood] = useState<EmotionalState>();
   const [isTyping, setIsTyping] = useState(false);
   const [showVoiceConversation, setShowVoiceConversation] = useState(false);
+  const [showApiSettings, setShowApiSettings] = useState(false);
   const [profileId, setProfileId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   // Initialize profile and load chat history
   useEffect(() => {
@@ -149,17 +153,40 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
 
   const generateAIResponse = async (userMessage: string, mood?: EmotionalState): Promise<string> => {
     try {
-      const { data, error } = await supabase.functions.invoke('chat-with-perplexity', {
+      const apiKey = localStorage.getItem('openai_api_key');
+      
+      const { data, error } = await supabase.functions.invoke('chat-with-openai', {
         body: {
           message: userMessage,
           characterName: character.name,
           characterPersonality: character.personality,
-          mood: mood
+          mood: mood,
+          apiKey: apiKey
         }
       });
 
       if (error) {
-        console.error('Error calling Perplexity:', error);
+        console.error('Error calling OpenAI:', error);
+        if (!apiKey) {
+          toast({
+            title: "API Key Required",
+            description: "Please add your OpenAI API key in settings to chat.",
+            variant: "destructive"
+          });
+          setShowApiSettings(true);
+        }
+        return getFallbackResponse();
+      }
+
+      if (data.error) {
+        toast({
+          title: "Chat Error",
+          description: data.error,
+          variant: "destructive"
+        });
+        if (data.error.includes('API key')) {
+          setShowApiSettings(true);
+        }
         return getFallbackResponse();
       }
 
@@ -310,6 +337,14 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
 
           <div className="flex items-center gap-2">
             <Button
+              onClick={() => setShowApiSettings(true)}
+              variant="ghost"
+              size="sm"
+              className="p-2"
+            >
+              <Settings className="w-4 h-4" />
+            </Button>
+            <Button
               onClick={() => setShowVoiceConversation(true)}
               variant="ghost"
               size="sm"
@@ -328,6 +363,13 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
           </div>
         </div>
       </div>
+
+      {/* API Key Settings Modal */}
+      {showApiSettings && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <ApiKeySettings onClose={() => setShowApiSettings(false)} />
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 max-w-4xl mx-auto w-full p-3 sm:p-4 overflow-y-auto">

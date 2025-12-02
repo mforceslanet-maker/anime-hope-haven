@@ -140,15 +140,27 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
   const getAIResponse = async (userMessage: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('chat-with-perplexity', {
+      const apiKey = localStorage.getItem('openai_api_key');
+      
+      const { data, error } = await supabase.functions.invoke('chat-with-openai', {
         body: {
           message: userMessage,
           characterName: character.name,
           characterPersonality: character.personality,
+          apiKey: apiKey
         }
       });
 
       if (error) throw error;
+
+      if (data.error) {
+        toast({
+          title: "API Error",
+          description: data.error,
+          variant: "destructive",
+        });
+        return;
+      }
 
       const responseText = data.response || "I'm here to listen.";
       
