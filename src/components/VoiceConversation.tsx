@@ -236,6 +236,22 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       return;
     }
 
+    // Request microphone permission explicitly
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Stop the stream immediately - we just needed to get permission
+      stream.getTracks().forEach(track => track.stop());
+      console.log('Microphone permission granted');
+    } catch (error) {
+      console.error('Microphone permission denied:', error);
+      toast({
+        title: "Microphone Access Required",
+        description: "Please allow microphone access to use voice conversation.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setConversationActive(true);
     
     toast({
@@ -244,8 +260,17 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
     });
 
     // Speak the character's greeting first
-    // After speaking ends, the recognition.onend handler will automatically start listening
     await speakText(character.greeting);
+    
+    // Start listening after the character finishes speaking
+    setTimeout(() => {
+      try {
+        recognitionRef.current?.start();
+        console.log('Speech recognition started');
+      } catch (e) {
+        console.error('Failed to start recognition:', e);
+      }
+    }, 500);
   };
 
   const stopConversation = () => {
