@@ -5,7 +5,7 @@ import { Input } from './ui/input';
 import { EmotionalStateSelector } from './EmotionalStateSelector';
 import { VoiceRecorder } from './VoiceRecorder';
 import { VoiceConversation } from './VoiceConversation';
-import { Send, ArrowLeft, Heart, Phone, MessageCircle } from 'lucide-react';
+import { Send, ArrowLeft, Heart, Phone, MessageCircle, ArrowUp } from 'lucide-react';
 import { supabase } from '../integrations/supabase/client';
 import { useToast } from './ui/use-toast';
 
@@ -29,7 +29,9 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
   const [showVoiceConversation, setShowVoiceConversation] = useState(false);
   const [profileId, setProfileId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   // Initialize profile and load chat history
@@ -143,6 +145,16 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToTop = () => {
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleScroll = () => {
+    if (scrollContainerRef.current) {
+      setShowBackToTop(scrollContainerRef.current.scrollTop > 300);
+    }
   };
 
   useEffect(() => {
@@ -301,8 +313,8 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-peaceful flex flex-col">
-      {/* Header */}
-      <div className="bg-card border-b border-border p-3 sm:p-4 shadow-gentle">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-10 bg-card border-b border-border p-3 sm:p-4 shadow-gentle">
         <div className="max-w-4xl mx-auto flex items-center gap-3 sm:gap-4">
           <Button 
             variant="ghost" 
@@ -346,7 +358,11 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 max-w-4xl mx-auto w-full p-3 sm:p-4 overflow-y-auto">
+      <div 
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 max-w-4xl mx-auto w-full p-3 sm:p-4 overflow-y-auto"
+      >
         <div className="space-y-8 mb-4">
           {messages.map((message) => (
             <div
@@ -514,6 +530,21 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
         </div>
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <Button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-20 rounded-full p-3 shadow-lg animate-fade-in"
+          style={{
+            backgroundColor: `hsl(var(--${character.color}))`,
+            color: 'white',
+          }}
+          size="icon"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </Button>
+      )}
     </div>
   );
 };
