@@ -473,48 +473,46 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
               </div>
             </div>
           )}
+
+          {/* Floating Input Area */}
+          <div className="bg-card rounded-2xl p-4 shadow-lg border border-border/50 mt-4 animate-fade-in">
+            <EmotionalStateSelector
+              currentMood={currentMood}
+              onMoodSelect={setCurrentMood}
+            />
+            
+            <div className="flex gap-2 sm:gap-3 mt-3">
+              <VoiceRecorder
+                onTranscriptionComplete={handleVoiceTranscription}
+                disabled={isTyping}
+              />
+              <Input
+                placeholder={`Share what's on your mind with ${character.name}...`}
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="flex-1 rounded-xl border-border/50 focus:border-primary/50 transition-colors text-sm sm:text-base min-h-[44px] sm:min-h-[48px]"
+              />
+              <Button
+                onClick={sendMessage}
+                disabled={!currentMessage.trim()}
+                className="p-3 sm:p-4 rounded-xl touch-manipulation min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px]"
+                style={{
+                  backgroundColor: `hsl(var(--${character.color}))`,
+                  color: 'white',
+                }}
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <p className="text-xs text-center text-muted-foreground leading-relaxed px-2 mt-3">
+              <MessageCircle className="w-3 h-3 inline mr-1" />
+              Your conversations are private and anonymous. {character.name} is here to listen and support you.
+            </p>
+          </div>
         </div>
         <div ref={messagesEndRef} />
-      </div>
-
-      {/* Input Area */}
-      <div className="bg-card border-t border-border p-3 sm:p-4 shadow-gentle">
-        <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4">
-          <EmotionalStateSelector
-            currentMood={currentMood}
-            onMoodSelect={setCurrentMood}
-          />
-          
-          <div className="flex gap-2 sm:gap-3">
-            <VoiceRecorder
-              onTranscriptionComplete={handleVoiceTranscription}
-              disabled={isTyping}
-            />
-            <Input
-              placeholder={`Share what's on your mind with ${character.name}...`}
-              value={currentMessage}
-              onChange={(e) => setCurrentMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="flex-1 rounded-xl border-border/50 focus:border-primary/50 transition-colors text-sm sm:text-base min-h-[44px] sm:min-h-[48px]"
-            />
-            <Button
-              onClick={sendMessage}
-              disabled={!currentMessage.trim()}
-              className="p-3 sm:p-4 rounded-xl touch-manipulation min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px]"
-              style={{
-                backgroundColor: `hsl(var(--${character.color}))`,
-                color: 'white',
-              }}
-            >
-              <Send className="w-4 h-4" />
-            </Button>
-          </div>
-          
-          <p className="text-xs text-center text-muted-foreground leading-relaxed px-2">
-            <MessageCircle className="w-3 h-3 inline mr-1" />
-            Your conversations are private and anonymous. {character.name} is here to listen and support you.
-          </p>
-        </div>
       </div>
     </div>
   );
