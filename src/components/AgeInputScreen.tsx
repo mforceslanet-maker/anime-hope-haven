@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Shield, Users } from 'lucide-react';
+import { Shield, Users, Key, Eye, EyeOff, Check } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface AgeInputScreenProps {
   onContinue: (age: number, profession?: string, idNumber?: string) => void;
@@ -21,6 +22,29 @@ export const AgeInputScreen = ({ onContinue }: AgeInputScreenProps) => {
   const [selectedProfession, setSelectedProfession] = useState('');
   const [idNumber, setIdNumber] = useState('');
   const [idError, setIdError] = useState('');
+  const [apiKey, setApiKey] = useState('');
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const savedKey = localStorage.getItem('openai_api_key');
+    if (savedKey) {
+      setApiKey(savedKey);
+      setHasApiKey(true);
+    }
+  }, []);
+
+  const handleSaveApiKey = () => {
+    if (apiKey.trim()) {
+      localStorage.setItem('openai_api_key', apiKey.trim());
+      setHasApiKey(true);
+      toast({
+        title: "API Key Saved",
+        description: "Your OpenAI API key has been saved.",
+      });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,6 +154,58 @@ export const AgeInputScreen = ({ onContinue }: AgeInputScreenProps) => {
                 )}
               </div>
             )}
+
+            {/* OpenAI API Key Input */}
+            <div className="space-y-2 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+              <div className="flex items-center gap-2 mb-2">
+                <Key className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                <Label htmlFor="apiKey" className="text-sm font-medium">
+                  OpenAI API Key {hasApiKey && <Check className="w-4 h-4 inline text-green-500 ml-1" />}
+                </Label>
+              </div>
+              <div className="relative">
+                <Input
+                  id="apiKey"
+                  type={showApiKey ? 'text' : 'password'}
+                  placeholder="sk-..."
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="pr-10 h-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                  onClick={() => setShowApiKey(!showApiKey)}
+                >
+                  {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">
+                  Get key from{' '}
+                  <a 
+                    href="https://platform.openai.com/api-keys" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-amber-600 dark:text-amber-400 hover:underline"
+                  >
+                    OpenAI Dashboard
+                  </a>
+                </p>
+                <Button 
+                  type="button" 
+                  size="sm" 
+                  variant="outline"
+                  onClick={handleSaveApiKey}
+                  disabled={!apiKey.trim()}
+                  className="h-7 text-xs"
+                >
+                  Save Key
+                </Button>
+              </div>
+            </div>
 
             {error && (
               <p className="text-sm text-destructive text-center">{error}</p>
