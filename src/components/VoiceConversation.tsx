@@ -140,14 +140,11 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
   const getAIResponse = async (userMessage: string) => {
     try {
-      const apiKey = localStorage.getItem('openai_api_key');
-      
       const { data, error } = await supabase.functions.invoke('chat-with-openai', {
         body: {
           message: userMessage,
           characterName: character.name,
-          characterPersonality: character.personality,
-          apiKey: apiKey
+          characterPersonality: character.personality
         }
       });
 
