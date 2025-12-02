@@ -27,6 +27,7 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
   const [conversationActive, setConversationActive] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
   const [interimTranscript, setInterimTranscript] = useState('');
+  const [currentResponse, setCurrentResponse] = useState('');
   
   const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
@@ -243,6 +244,9 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
       const responseText = data.response || "I'm here to listen.";
       
+      // Set the response text for display
+      setCurrentResponse(responseText);
+      
       // Speak the response
       await speakText(responseText);
       
@@ -295,6 +299,7 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
       utterance.onend = () => {
         setIsSpeaking(false);
+        setCurrentResponse('');
         resolve();
       };
 
@@ -339,7 +344,8 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       description: `${character.name} is greeting you...`,
     });
 
-    // Speak the character's greeting first
+    // Set greeting text for display and speak it
+    setCurrentResponse(character.greeting);
     await speakText(character.greeting);
     
     // Start listening after the character finishes speaking
@@ -373,6 +379,7 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
     setIsListening(false);
     setIsSpeaking(false);
     setInterimTranscript('');
+    setCurrentResponse('');
   };
 
   const handleClose = () => {
@@ -505,13 +512,22 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
           : "Ready to start"}
       </p>
       
+      {/* Show character's response while speaking */}
+      {currentResponse && isSpeaking && (
+        <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 mb-4 max-w-md mx-4 shadow-lg border border-border/50">
+          <p className="text-center text-sm text-foreground">
+            {currentResponse}
+          </p>
+        </div>
+      )}
+      
       {/* Show interim transcript */}
       {interimTranscript && (
         <p className="text-center text-sm text-muted-foreground mb-6 px-4 italic max-w-md">
           "{interimTranscript}"
         </p>
       )}
-      {!interimTranscript && <div className="mb-6" />}
+      {!interimTranscript && !currentResponse && <div className="mb-6" />}
 
       {/* Control buttons */}
       <div className="flex gap-4">
