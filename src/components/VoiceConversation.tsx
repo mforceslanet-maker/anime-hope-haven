@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Mic, X, Volume2 } from 'lucide-react';
@@ -25,10 +25,61 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>('');
   const [conversationActive, setConversationActive] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0);
+  const [interimTranscript, setInterimTranscript] = useState('');
   
   const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const micStreamRef = useRef<MediaStream | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSpeechTimeRef = useRef<number>(Date.now());
   const { toast } = useToast();
+
+  // Audio level visualization
+  const startAudioVisualization = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      micStreamRef.current = stream;
+      
+      audioContextRef.current = new AudioContext();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      analyserRef.current.fftSize = 256;
+      
+      const source = audioContextRef.current.createMediaStreamSource(stream);
+      source.connect(analyserRef.current);
+      
+      const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+      
+      const updateLevel = () => {
+        if (analyserRef.current) {
+          analyserRef.current.getByteFrequencyData(dataArray);
+          const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+          setAudioLevel(average / 255);
+        }
+        animationFrameRef.current = requestAnimationFrame(updateLevel);
+      };
+      
+      updateLevel();
+    } catch (error) {
+      console.error('Failed to start audio visualization:', error);
+    }
+  }, []);
+
+  const stopAudioVisualization = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    if (micStreamRef.current) {
+      micStreamRef.current.getTracks().forEach(track => track.stop());
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+    }
+    setAudioLevel(0);
+  }, []);
 
   // Load available voices
   useEffect(() => {
@@ -55,8 +106,12 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       if (synthRef.current) {
         synthRef.current.cancel();
       }
+      stopAudioVisualization();
+      if (silenceTimeoutRef.current) {
+        clearTimeout(silenceTimeoutRef.current);
+      }
     };
-  }, []);
+  }, [stopAudioVisualization]);
 
   // Initialize speech recognition
   useEffect(() => {
@@ -72,24 +127,50 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
     }
 
     const recognition = new SpeechRecognition();
-    recognition.continuous = true; // Keep listening
-    recognition.interimResults = false;
+    recognition.continuous = true;
+    recognition.interimResults = true; // Enable interim results for better feedback
     recognition.lang = 'en-US';
+    recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
       setIsListening(true);
+      lastSpeechTimeRef.current = Date.now();
+      console.log('Speech recognition started');
     };
 
     recognition.onresult = async (event: any) => {
-      const transcript = event.results[event.results.length - 1][0].transcript;
-      console.log('User said:', transcript);
+      let finalTranscript = '';
+      let interim = '';
       
-      // Stop listening while processing
-      recognition.stop();
-      setIsListening(false);
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interim += transcript;
+        }
+      }
       
-      // Get AI response
-      await getAIResponse(transcript);
+      // Update interim transcript for visual feedback
+      setInterimTranscript(interim);
+      lastSpeechTimeRef.current = Date.now();
+      
+      if (finalTranscript) {
+        console.log('Final transcript:', finalTranscript);
+        setInterimTranscript('');
+        
+        // Stop listening while processing
+        recognition.stop();
+        setIsListening(false);
+        
+        // Clear silence timeout
+        if (silenceTimeoutRef.current) {
+          clearTimeout(silenceTimeoutRef.current);
+        }
+        
+        // Get AI response
+        await getAIResponse(finalTranscript);
+      }
     };
 
     recognition.onerror = (event: any) => {
@@ -97,7 +178,7 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       
       if (event.error === 'no-speech') {
         // Restart listening if no speech detected
-        if (conversationActive) {
+        if (conversationActive && !isSpeaking) {
           setTimeout(() => {
             try {
               recognition.start();
@@ -117,6 +198,7 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
 
     recognition.onend = () => {
       setIsListening(false);
+      setInterimTranscript('');
       // Restart listening if conversation is still active and not speaking
       if (conversationActive && !isSpeaking) {
         setTimeout(() => {
@@ -236,12 +318,10 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       return;
     }
 
-    // Request microphone permission explicitly
+    // Request microphone permission and start visualization
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // Stop the stream immediately - we just needed to get permission
-      stream.getTracks().forEach(track => track.stop());
-      console.log('Microphone permission granted');
+      await startAudioVisualization();
+      console.log('Microphone permission granted and visualization started');
     } catch (error) {
       console.error('Microphone permission denied:', error);
       toast({
@@ -284,8 +364,15 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
       synthRef.current.cancel();
     }
     
+    stopAudioVisualization();
+    
+    if (silenceTimeoutRef.current) {
+      clearTimeout(silenceTimeoutRef.current);
+    }
+    
     setIsListening(false);
     setIsSpeaking(false);
+    setInterimTranscript('');
   };
 
   const handleClose = () => {
@@ -327,9 +414,25 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
           </>
         )}
         
-        {/* Listening indicator */}
+        {/* Listening indicator with volume level */}
         {isListening && (
-          <div className="absolute inset-0 -m-6 rounded-full border-4 border-blue-400 animate-pulse" />
+          <>
+            <div 
+              className="absolute inset-0 rounded-full border-4 border-green-400 transition-all duration-75"
+              style={{
+                margin: `${-6 - audioLevel * 20}px`,
+                opacity: 0.3 + audioLevel * 0.7,
+                borderColor: audioLevel > 0.3 ? 'rgb(34, 197, 94)' : 'rgb(59, 130, 246)',
+              }}
+            />
+            <div 
+              className="absolute inset-0 rounded-full border-2 border-green-300 transition-all duration-75"
+              style={{
+                margin: `${-12 - audioLevel * 30}px`,
+                opacity: audioLevel * 0.5,
+              }}
+            />
+          </>
         )}
         
         {/* Character image */}
@@ -369,8 +472,30 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
         </div>
       </div>
 
+      {/* Volume level bars when listening */}
+      {isListening && (
+        <div className="flex items-end justify-center gap-1 h-8 mb-4">
+          {[...Array(7)].map((_, i) => {
+            const threshold = i / 7;
+            const isActive = audioLevel > threshold;
+            return (
+              <div
+                key={i}
+                className={`w-2 rounded-full transition-all duration-75 ${
+                  isActive ? 'bg-green-500' : 'bg-muted'
+                }`}
+                style={{
+                  height: `${12 + i * 4}px`,
+                  opacity: isActive ? 0.8 + audioLevel * 0.2 : 0.3,
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+
       {/* Status text */}
-      <p className="text-center text-lg font-medium mb-8">
+      <p className="text-center text-lg font-medium mb-2">
         {isSpeaking 
           ? `${character.name} is speaking...` 
           : isListening 
@@ -379,6 +504,14 @@ export const VoiceConversation = ({ character, onClose }: VoiceConversationProps
           ? "Processing..."
           : "Ready to start"}
       </p>
+      
+      {/* Show interim transcript */}
+      {interimTranscript && (
+        <p className="text-center text-sm text-muted-foreground mb-6 px-4 italic max-w-md">
+          "{interimTranscript}"
+        </p>
+      )}
+      {!interimTranscript && <div className="mb-6" />}
 
       {/* Control buttons */}
       <div className="flex gap-4">
