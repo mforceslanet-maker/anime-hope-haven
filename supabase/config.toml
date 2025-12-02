@@ -1,1 +1,4 @@
 project_id = "hxdxefvmkepkopfvvmql"
+
+[functions.chat-with-openai]
+verify_jwt = false
