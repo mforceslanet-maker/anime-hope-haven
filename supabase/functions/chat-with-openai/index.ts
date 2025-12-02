@@ -12,16 +12,16 @@ serve(async (req) => {
   }
 
   try {
-    const { message, characterName, characterPersonality, apiKey } = await req.json();
+    const { message, characterName, characterPersonality } = await req.json();
 
-    // Use provided API key or fall back to server-side key
-    const openaiApiKey = apiKey || Deno.env.get('OPENAI_API_KEY');
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
     
     if (!openaiApiKey) {
+      console.error('OPENAI_API_KEY not configured');
       return new Response(JSON.stringify({ 
-        error: 'No API key provided. Please add your OpenAI API key in settings.' 
+        error: 'OpenAI API key not configured. Please contact support.' 
       }), {
-        status: 400,
+        status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
