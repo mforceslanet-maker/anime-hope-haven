@@ -57,16 +57,16 @@ export const storyScenarios: StoryScenario[] = [
     id: 'peer-pressure',
     title: 'Staying True to Yourself',
     description: 'A story about resisting peer pressure',
-    characters: ['alex', 'junno', 'skye'],
-    situation: "Alex is at a party where friends are pressuring them to try something they're not comfortable with. Everyone is saying 'come on, just this once!'",
+    characters: ['nova', 'junno', 'skye'],
+    situation: "Nova is at a party where friends are pressuring them to try something they're not comfortable with. Everyone is saying 'come on, just this once!'",
     options: [
       {
         id: 'say-no',
-        text: "Help Alex say no confidently and suggest an alternative",
+        text: "Help Nova say no confidently and suggest an alternative",
         isCorrect: true,
-        consequence: "Alex politely declines and suggests playing a game instead. True friends respect the decision, and Alex feels proud for staying true to their values.",
+        consequence: "Nova politely declines and suggests playing a game instead. True friends respect the decision, and Nova feels proud for staying true to their values.",
         characterReactions: {
-          alex: {
+          nova: {
             expression: 'proud',
             dialogue: "I'm so glad I stayed true to myself! Real friends respect your boundaries."
           },
@@ -82,21 +82,21 @@ export const storyScenarios: StoryScenario[] = [
       },
       {
         id: 'give-in',
-        text: "Tell Alex to give in to avoid conflict",
+        text: "Tell Nova to give in to avoid conflict",
         isCorrect: false,
-        consequence: "Alex gives in but immediately regrets it. They feel uncomfortable and realize these aren't true friends if they don't respect boundaries.",
+        consequence: "Nova gives in but immediately regrets it. They feel uncomfortable and realize these aren't true friends if they don't respect boundaries.",
         characterReactions: {
-          alex: {
+          nova: {
             expression: 'sad',
             dialogue: "I wish I had been stronger... I don't feel good about this decision."
           },
           junno: {
             expression: 'concerned',
-            dialogue: "What if Alex had trusted their instincts? What if they had said no confidently?"
+            dialogue: "What if Nova had trusted their instincts? What if they had said no confidently?"
           },
           skye: {
             expression: 'sad',
-            dialogue: "Real friends would have respected Alex's choice. What could have happened if Alex had stood firm?"
+            dialogue: "Real friends would have respected Nova's choice. What could have happened if Nova had stood firm?"
           }
         }
       }
@@ -161,7 +161,7 @@ export const storyScenarios: StoryScenario[] = [
     id: 'level2-celebration',
     title: 'Welcome to Level 2!',
     description: 'Celebrating your growth and new beginnings',
-    characters: ['junno', 'lex', 'nova', 'skye', 'alex'],
+    characters: ['junno', 'lex', 'nova', 'skye'],
     situation: "🎉 Congratulations! You've made it to Level 2! All the characters are here to celebrate your emotional growth and welcome you to a new phase of your journey.",
     options: [
       {
@@ -185,10 +185,6 @@ export const storyScenarios: StoryScenario[] = [
           junno: {
             expression: 'proud',
             dialogue: "You've shown real wisdom in your choices. Level 2 is where we share life's ups and downs as friends."
-          },
-          alex: {
-            expression: 'happy',
-            dialogue: "🎈 This is amazing! In Level 2, we'll laugh together, support each other, and make each day brighter!"
           }
         }
       },
@@ -198,11 +194,11 @@ export const storyScenarios: StoryScenario[] = [
         isCorrect: false,
         consequence: "The characters gently encourage you, showing that it's okay to feel uncertain about new phases in life.",
         characterReactions: {
-          alex: {
+          junno: {
             expression: 'concerned',
             dialogue: "It's okay to feel uncertain! Change can be overwhelming, even when it's positive."
           },
-          junno: {
+          nova: {
             expression: 'concerned',
             dialogue: "What if we celebrated together? What if this new level brought joy and friendship?"
           },
