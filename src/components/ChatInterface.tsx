@@ -224,7 +224,7 @@ export const ChatInterface = ({ character, onBack }: ChatInterfaceProps) => {
         "Let's find something that brings a little sparkle to your day together!",
         "You have so much strength inside you - sometimes we just need to remind ourselves!"
       ],
-      alex: [
+      'military-therapist': [
         "I'm here to listen and support you through whatever you're experiencing.",
         "Your feelings are completely valid, and you deserve compassion and understanding.",
         "Let's work through this together, one step at a time.",

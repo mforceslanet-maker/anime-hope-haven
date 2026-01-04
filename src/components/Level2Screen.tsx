@@ -49,11 +49,6 @@ export const Level2Screen = ({ onBack }: Level2ScreenProps) => {
       character: 'junno',
       message: "Your wisdom in Level 1 brought you here. In Level 2, we laugh, share, and support each other daily! 🎈",
       animation: 'wise'
-    },
-    {
-      character: 'alex',
-      message: "This is amazing! We're all here together now! Level 2 is about celebrating life's moments - big and small! ✨",
-      animation: 'excited'
     }
   ];
 
